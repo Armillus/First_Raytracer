@@ -66,6 +66,11 @@ namespace rt {
             return Color(red, green, blue);
         }
 
+        inline bool isBlack(void)
+        {
+            return r == 0 && g == 0 && b == 0;
+        }
+
         unsigned char r;
         unsigned char g;
         unsigned char b;

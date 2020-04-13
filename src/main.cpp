@@ -48,7 +48,9 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
     objects.push_back(rt::Sphere({100.f, 100.f, 0.f}, 100, {cyan.r, cyan.g, cyan.b}));
     objects.push_back(rt::Sphere({300.f, 500.f, 0.f}, 100, {magenta.r, magenta.g, magenta.b}));
     
-    lights.emplace_back(rt::Light({0.f, 240.f, -100.f}, {1.f, 1.f, 1.f}));
+    //lights.emplace_back(rt::Light({0.f, 240.f, -100.f}, {1.f, 1.f, 1.f}));
+    //lights.emplace_back(rt::Light({3200.f, 3000.f, -1000.f}, {0.6f, 0.7f, 1.f}));
+    lights.emplace_back(rt::Light({600.f, 0.f, -100.f}, {0.3f, 0.5f, 1.f}));
 
     for (unsigned int y = 0; y < height; ++y)
     {
@@ -87,8 +89,11 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
                         continue; 
 
                     //color += obj->color() * light.color() * scalar;
-                    color = obj->color() * (ambientLight + diffuseCoeff * scalar);
+                    color += light.color() * diffuseCoeff * scalar;
                 }
+                
+                if (color.isBlack())
+                    color = obj->color() * ambientLight;
                 // float facing_ratio = N * V;
 
                 // std::cout << N << std::endl;
