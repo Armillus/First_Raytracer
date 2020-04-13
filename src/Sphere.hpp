@@ -107,6 +107,11 @@ namespace rt {
             return v.normalize();
         }
 
+        inline maths::Vector3f &center()
+        {
+            return _center;
+        }
+
     private:
         maths::Vector3f _center;
         float _radius; 

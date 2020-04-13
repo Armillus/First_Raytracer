@@ -44,7 +44,7 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
     sf::Color magenta = sf::Color::Magenta;
     rt::Color ambientLight(0.2f, 0.2f, 0.2f);
 
-    objects.push_back(rt::Sphere({500.f, 300.f, 0.f}, 100, {blue.r, blue.g, blue.b}));
+    objects.push_back(rt::Sphere({500.f, 300.f, -10.f}, 100, {blue.r, blue.g, blue.b}));
     objects.push_back(rt::Sphere({100.f, 100.f, 0.f}, 100, {cyan.r, cyan.g, cyan.b}));
     objects.push_back(rt::Sphere({300.f, 500.f, 0.f}, 100, {magenta.r, magenta.g, magenta.b}));
     
@@ -81,19 +81,40 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
 
                 for (auto &light : lights)
                 {
-                    auto L = light.position() - P;
-                    float scalar = L.normalize() * N;
+                    bool shadowed = false;
+                    auto distanceFromPtoLight = light.position() - P;
+                    auto shadowRay = rt::Ray(P, distanceFromPtoLight.normalize());
+                    float scalar = shadowRay.direction() * N;
 
                     // This part of the object isn't lit.
                     if (scalar < 0.0f)
-                        continue; 
+                        continue;
 
-                    //color += obj->color() * light.color() * scalar;
-                    color += light.color() * diffuseCoeff * scalar;
+                    t = 20000;
+                    for (auto &object : objects)
+                    {
+                        if (object.intersect(shadowRay, &t))
+                        {
+                            auto distanceFromPtoObject = shadowRay.origin() - object.center();
+                            
+                            if (t > 0.01 && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
+                            {
+                                shadowed = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!shadowed)
+                    {
+                        color += light.color() * diffuseCoeff * scalar;
+                    }
+                    else
+                    {
+                        color = color * 0.99;
+                    }
+                    
                 }
-                
-                if (color.isBlack())
-                    color = obj->color() * ambientLight;
                 // float facing_ratio = N * V;
 
                 // std::cout << N << std::endl;
