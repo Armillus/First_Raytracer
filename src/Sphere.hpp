@@ -99,7 +99,7 @@ namespace rt {
             return false;
         }
 
-        inline maths::Vector3f normalSurface(maths::Vector3f &p)
+        inline maths::Vector3f normalSurface(maths::Vector3f &p) override
         {
             //return (p - _center) * (-1 / _radius);
             auto v = p - _center;
@@ -107,7 +107,7 @@ namespace rt {
             return v.normalize();
         }
 
-        inline maths::Vector3f &center()
+        inline maths::Vector3f &center() override
         {
             return _center;
         }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Ray.hpp"
 #include "Color.hpp"
 
@@ -11,6 +13,9 @@ namespace rt {
         virtual ~Object() = default;
 
         virtual bool intersect(Ray &ray, float *t) = 0;
+        virtual maths::Vector3f normalSurface(maths::Vector3f &p) = 0;
+
+        virtual maths::Vector3f &center() = 0;
 
         inline Color &color()
         {
@@ -21,6 +26,9 @@ namespace rt {
         {
             return _reflection;
         }
+
+
+
 
     private:
         Color _color;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <list>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -7,6 +8,7 @@
 
 #include "Sphere.hpp"
 #include "Light.hpp"
+#include "Plane.hpp"
 
 static void renderInAscii(void)
 {
@@ -36,18 +38,22 @@ static void renderInAscii(void)
 
 static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int height)
 {
-    std::vector<rt::Sphere> objects;
+    std::list<rt::Object *> objects;
     std::vector<rt::Light> lights;
     rt::Ray ray({0.f, 0.f, -2000.f}, {0.f, 0.f, 1.f});
     sf::Color blue = sf::Color::Blue;
     sf::Color cyan = sf::Color::Cyan;
     sf::Color magenta = sf::Color::Magenta;
+    //sf::Color yellow = sf::Color::Yellow;
+    sf::Color yellow = sf::Color::Yellow;
     rt::Color ambientLight(0.2f, 0.2f, 0.2f);
 
-    objects.push_back(rt::Sphere({700.f, 300.f, -60.f}, 100, {blue.r, blue.g, blue.b}));
-    objects.push_back(rt::Sphere({300.f, 100.f, 0.f}, 200, {cyan.r, cyan.g, cyan.b}));
-    objects.push_back(rt::Sphere({500.f, 500.f, 0.f}, 150, {magenta.r, magenta.g, magenta.b}));
-    
+    objects.push_back(new rt::Sphere({700.f, 300.f, -60.f}, 100, {blue.r, blue.g, blue.b}));
+    objects.push_back(new rt::Sphere({300.f, 100.f, 0.f}, 200, {cyan.r, cyan.g, cyan.b}));
+    objects.push_back(new rt::Sphere({500.f, 500.f, 0.f}, 150, {magenta.r, magenta.g, magenta.b}));
+   
+    objects.push_back(new rt::Plane({0.f, 0.f, -1.f}, {0.f, 0.f, 0.f}, {yellow.r, yellow.g, yellow.b}));
+
     lights.emplace_back(rt::Light({0.f, 240.f, 50.f}, {1.f, 1.f, 1.f}));
     //lights.emplace_back(rt::Light({3200.f, 3000.f, -1000.f}, {0.6f, 0.7f, 1.f}));
     lights.emplace_back(rt::Light({600.f, 0.f, -100.f}, {1.0f, 0.25f, 0.25f}));
@@ -67,15 +73,22 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
 
             do {
                 float t = 20000.0f;
-                rt::Sphere *obj = nullptr;
+                rt::Object *obj = nullptr;
+                unsigned int j = 0;
+                unsigned int closest = 0;
 
                 for (auto &object : objects)
                 {
-                    if (object.intersect(r, &t))
+                    if (object->intersect(r, &t))
                     {
-                        obj = &object;
+                        obj = object;
+                        closest = j;
                     }
+                    j++;
                 }
+               // std::cout << "J = " << j << std::endl;
+               // if (closest == 3)
+               //     std::cout << "Closest = " << closest << std::endl;
                 if (obj)
                 {
                     auto V = r.direction();
@@ -100,11 +113,11 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
                         t = 20000;
                         for (auto &object : objects)
                         {
-                            if (object.intersect(shadowRay, &t))
+                            if (object->intersect(shadowRay, &t))
                             {
-                                auto distanceFromPtoObject = shadowRay.origin() - object.center();
+                                auto distanceFromPtoObject = shadowRay.origin() - object->center();
                                 
-                                if (t > 0.01 && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
+                                if (t > 0.001 && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
                                 {
                                     shadowed = true;
                                     break;
