@@ -10,10 +10,7 @@ namespace rt {
         Object(const Color &color) : _color(color) {}
         virtual ~Object() = default;
 
-        virtual bool intersects(Ray &ray, float *t)
-        { 
-            return false;
-        }
+        virtual bool intersect(Ray &ray, float *t) = 0;
 
         inline Color &color()
         {

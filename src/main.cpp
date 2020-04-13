@@ -6,6 +6,7 @@
 #include <SFML/System.hpp>
 
 #include "Sphere.hpp"
+#include "Light.hpp"
 
 static void renderInAscii(void)
 {
@@ -20,7 +21,7 @@ static void renderInAscii(void)
         {
             r.origin().y = y;
 
-            if (s.intersects(r, &t))
+            if (s.intersect(r, &t))
             {
                 std::cout << "++";
             }
@@ -36,22 +37,25 @@ static void renderInAscii(void)
 static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int height)
 {
     std::vector<rt::Sphere> objects;
+    std::vector<rt::Light> lights;
     rt::Ray r({0.f, 0.f, -2000.f}, {0.f, 0.f, 1.f});
     sf::Color blue = sf::Color::Blue;
     sf::Color cyan = sf::Color::Cyan;
     sf::Color magenta = sf::Color::Magenta;
+    rt::Color ambientLight(0.2f, 0.2f, 0.2f);
 
     objects.push_back(rt::Sphere({500.f, 300.f, 0.f}, 100, {blue.r, blue.g, blue.b}));
     objects.push_back(rt::Sphere({100.f, 100.f, 0.f}, 100, {cyan.r, cyan.g, cyan.b}));
     objects.push_back(rt::Sphere({300.f, 500.f, 0.f}, 100, {magenta.r, magenta.g, magenta.b}));
     
+    lights.emplace_back(rt::Light({0.f, 240.f, -100.f}, {1.f, 1.f, 1.f}));
 
     for (unsigned int y = 0; y < height; ++y)
     {
         r.origin().y = y;
         for (unsigned int x = 0; x < width; ++x)
         {
-            float t = 20000.0;
+            float t = 20000.0f;
             r.origin().x = x;
 
             unsigned int i = (x + y * width) * 4;
@@ -59,40 +63,60 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
 
             for (auto &object : objects)
             {
-                if (object.intersects(r, &t))
+                if (object.intersect(r, &t))
                 {
                     obj = &object;
                 }
             }
             if (obj)
             {
-                auto color = obj->color();
+                auto V = r.direction();
+                auto P = r.origin() + V * t;
+                auto N = obj->normalSurface(P);
 
+                auto color = obj->color() * ambientLight;
+                auto diffuseCoeff = rt::Color(1.f, 1.f, 1.f) - ambientLight;
+
+                for (auto &light : lights)
+                {
+                    auto L = light.position() - P;
+                    float scalar = L.normalize() * N;
+
+                    // This part of the object isn't lit.
+                    if (scalar < 0.0f)
+                        continue; 
+
+                    //color += obj->color() * light.color() * scalar;
+                    color = obj->color() * (ambientLight + diffuseCoeff * scalar);
+                }
+                // float facing_ratio = N * V;
+
+                // std::cout << N << std::endl;
+                
+               // auto color = obj->color() * (facing_ratio * 0.5);
+            
                 pixels[i] = color.r;
                 pixels[i + 1] = color.g;
                 pixels[i + 2] = color.b;
                 pixels[i + 3] = color.a;
-
-                auto p = r.direction() * t + r.origin();
-
-                
             }
             else
             {
-                pixels[i] = 0;
-                pixels[i + 1] = 0;
-                pixels[i + 2] = 0;
+                auto color = rt::Color(0.2f, 0.2f, 0.2f);
+
+                pixels[i] = color.r;
+                pixels[i + 1] = color.g;
+                pixels[i + 2] = color.b;
                 pixels[i + 3] = 255;
             }
-            i += 4;
         }
     }
 }
 
 static void renderInSfml(void)
 {
-    unsigned int width = 800;
-    unsigned int height = 600;
+    unsigned int width = 1200;
+    unsigned int height = 800;
 
     sf::Uint8 *pixels = new sf::Uint8[width * height * 4];
 
@@ -106,6 +130,8 @@ static void renderInSfml(void)
     sf::Sprite sprite(texture); // needed to draw the texture on screen
 
     sf::RenderWindow window(sf::VideoMode(width, height), "My window");
+
+    window.setFramerateLimit(60);
 
     // on fait tourner le programme tant que la fenêtre n'a pas été fermée
     while (window.isOpen())

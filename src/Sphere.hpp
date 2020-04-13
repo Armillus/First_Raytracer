@@ -8,7 +8,7 @@ namespace rt {
 
     class Sphere : public Object {
     public:
-        Sphere(const maths::Vector3f &center, float radius) : Object({0, 0, 255}), _center(center), _radius(radius) {}
+        Sphere(const maths::Vector3f &center, float radius) : Object({0u, 0u, 255u}), _center(center), _radius(radius) {}
         Sphere(const maths::Vector3f &center, float radius, const Color &color)
             : Object(color), _center(center), _radius(radius) {}
         ~Sphere() override = default;
@@ -56,7 +56,7 @@ namespace rt {
             It means that it is a quadratic equation, or a second degree polynomial.
             The value of the discriminant delta will be the number of intersections between the ray and the sphere.
         */
-        bool intersects(Ray &ray, float *t) override
+        bool intersect(Ray &ray, float *t) override
         {
             // To determine if a ray intersects with the sphere, we don't need to know t.
 
@@ -99,9 +99,12 @@ namespace rt {
             return false;
         }
 
-        inline maths::Vector3f normalVectorFromPoint(maths::Vector3f &p)
+        inline maths::Vector3f normalSurface(maths::Vector3f &p)
         {
-            return (p - _center) * (-1 / _radius);
+            //return (p - _center) * (-1 / _radius);
+            auto v = p - _center;
+
+            return v.normalize();
         }
 
     private:
