@@ -38,103 +38,103 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
 {
     std::vector<rt::Sphere> objects;
     std::vector<rt::Light> lights;
-    rt::Ray r({0.f, 0.f, -2000.f}, {0.f, 0.f, 1.f});
+    rt::Ray ray({0.f, 0.f, -2000.f}, {0.f, 0.f, 1.f});
     sf::Color blue = sf::Color::Blue;
     sf::Color cyan = sf::Color::Cyan;
     sf::Color magenta = sf::Color::Magenta;
     rt::Color ambientLight(0.2f, 0.2f, 0.2f);
 
-    objects.push_back(rt::Sphere({500.f, 300.f, -10.f}, 100, {blue.r, blue.g, blue.b}));
-    objects.push_back(rt::Sphere({100.f, 100.f, 0.f}, 100, {cyan.r, cyan.g, cyan.b}));
-    objects.push_back(rt::Sphere({300.f, 500.f, 0.f}, 100, {magenta.r, magenta.g, magenta.b}));
+    objects.push_back(rt::Sphere({700.f, 300.f, -60.f}, 100, {blue.r, blue.g, blue.b}));
+    objects.push_back(rt::Sphere({300.f, 100.f, 0.f}, 200, {cyan.r, cyan.g, cyan.b}));
+    objects.push_back(rt::Sphere({500.f, 500.f, 0.f}, 150, {magenta.r, magenta.g, magenta.b}));
     
-    //lights.emplace_back(rt::Light({0.f, 240.f, -100.f}, {1.f, 1.f, 1.f}));
+    lights.emplace_back(rt::Light({0.f, 240.f, 50.f}, {1.f, 1.f, 1.f}));
     //lights.emplace_back(rt::Light({3200.f, 3000.f, -1000.f}, {0.6f, 0.7f, 1.f}));
-    lights.emplace_back(rt::Light({600.f, 0.f, -100.f}, {0.3f, 0.5f, 1.f}));
+    lights.emplace_back(rt::Light({600.f, 0.f, -100.f}, {1.0f, 0.25f, 0.25f}));
 
     for (unsigned int y = 0; y < height; ++y)
     {
-        r.origin().y = y;
+        ray.origin().y = y;
         for (unsigned int x = 0; x < width; ++x)
         {
-            float t = 20000.0f;
-            r.origin().x = x;
+            ray.origin().x = x;
 
+            rt::Ray r = ray;
             unsigned int i = (x + y * width) * 4;
-            rt::Sphere *obj = nullptr;
+            float reflectionCoeff = 1.0f;
+            int level = 10;
+            auto color = ambientLight;
 
-            for (auto &object : objects)
-            {
-                if (object.intersect(r, &t))
+            do {
+                float t = 20000.0f;
+                rt::Sphere *obj = nullptr;
+
+                for (auto &object : objects)
                 {
-                    obj = &object;
-                }
-            }
-            if (obj)
-            {
-                auto V = r.direction();
-                auto P = r.origin() + V * t;
-                auto N = obj->normalSurface(P);
-
-                auto color = obj->color() * ambientLight;
-                auto diffuseCoeff = rt::Color(1.f, 1.f, 1.f) - ambientLight;
-
-                for (auto &light : lights)
-                {
-                    bool shadowed = false;
-                    auto distanceFromPtoLight = light.position() - P;
-                    auto shadowRay = rt::Ray(P, distanceFromPtoLight.normalize());
-                    float scalar = shadowRay.direction() * N;
-
-                    // This part of the object isn't lit.
-                    if (scalar < 0.0f)
-                        continue;
-
-                    t = 20000;
-                    for (auto &object : objects)
+                    if (object.intersect(r, &t))
                     {
-                        if (object.intersect(shadowRay, &t))
+                        obj = &object;
+                    }
+                }
+                if (obj)
+                {
+                    auto V = r.direction();
+                    auto P = r.origin() + V * t;
+                    auto N = obj->normalSurface(P);
+
+                    color = obj->color() * ambientLight;
+                    auto diffuseCoeff = rt::Color(1.f, 1.f, 1.f) - ambientLight;
+                    float bias = 0.5;
+
+                    for (auto &light : lights)
+                    {
+                        bool shadowed = false;
+                        auto distanceFromPtoLight = light.position() - P;
+                        auto shadowRay = rt::Ray(P + N * bias, distanceFromPtoLight.normalize());
+                        float scalar = shadowRay.direction() * N;
+
+                        // This part of the object isn't lit.
+                        if (scalar < 0.0f)
+                            continue;
+
+                        t = 20000;
+                        for (auto &object : objects)
                         {
-                            auto distanceFromPtoObject = shadowRay.origin() - object.center();
-                            
-                            if (t > 0.01 && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
+                            if (object.intersect(shadowRay, &t))
                             {
-                                shadowed = true;
-                                break;
+                                auto distanceFromPtoObject = shadowRay.origin() - object.center();
+                                
+                                if (t > 0.01 && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
+                                {
+                                    shadowed = true;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (!shadowed)
-                    {
-                        color += light.color() * diffuseCoeff * scalar;
+                        if (!shadowed)
+                        {
+                            color += light.color() * diffuseCoeff * scalar * reflectionCoeff;
+                        }
+                        // else
+                        // {
+                        //     //float facing_ratio = N * V;
+                        //     // std::cout << N << std::endl;
+                        //     //color = color * (facing_ratio * 0.5);
+                        //     color = color * 1.f;
+                        // }
                     }
-                    else
-                    {
-                        color = color * 0.99;
-                    }
-                    
+                    rt::Ray reflectedRay(P, V - (N * 2.f * (V * N)));
+                    r = reflectedRay;
+                    reflectionCoeff *= obj->reflection();
                 }
-                // float facing_ratio = N * V;
-
-                // std::cout << N << std::endl;
-                
-               // auto color = obj->color() * (facing_ratio * 0.5);
+                level--;
+            } while (level > 0 && reflectionCoeff > 0.0f);
             
-                pixels[i] = color.r;
-                pixels[i + 1] = color.g;
-                pixels[i + 2] = color.b;
-                pixels[i + 3] = color.a;
-            }
-            else
-            {
-                auto color = rt::Color(0.2f, 0.2f, 0.2f);
-
-                pixels[i] = color.r;
-                pixels[i + 1] = color.g;
-                pixels[i + 2] = color.b;
-                pixels[i + 3] = 255;
-            }
+            pixels[i] = color.r;
+            pixels[i + 1] = color.g;
+            pixels[i + 2] = color.b;
+            pixels[i + 3] = color.a;
         }
     }
 }
