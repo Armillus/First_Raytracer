@@ -10,7 +10,9 @@ namespace rt {
     public:
         Sphere(const maths::Vector3f &center, float radius) : Object({0u, 0u, 255u}), _center(center), _radius(radius) {}
         Sphere(const maths::Vector3f &center, float radius, const Color &color)
-            : Object(color), _center(center), _radius(radius) {}
+            : Object(color, 0.5f), _center(center), _radius(radius) {}
+        Sphere(const maths::Vector3f &center, float radius, const Material &material)
+            : Object(material.color, material.reflection), _center(center), _radius(radius) {}
         ~Sphere() override = default;
 
 

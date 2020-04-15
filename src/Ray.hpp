@@ -8,7 +8,10 @@ namespace rt {
     public:
         Ray(const maths::Vector3f &origin, const maths::Vector3f &direction)
             : _origin(origin), _direction(direction)
-        {}
+        {
+            _direction = _direction.normalize();
+        }
+
         ~Ray() = default;
 
 

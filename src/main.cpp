@@ -40,32 +40,43 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
 {
     std::list<rt::Object *> objects;
     std::vector<rt::Light> lights;
-    rt::Ray ray({0.f, 0.f, -2000.f}, {0.f, 0.f, 1.f});
+    rt::Ray ray({0.f, 00.f, 0.f}, {0.f, 0.f, -1.f});
     sf::Color blue = sf::Color::Blue;
     sf::Color cyan = sf::Color::Cyan;
     sf::Color magenta = sf::Color::Magenta;
-    //sf::Color yellow = sf::Color::Yellow;
     sf::Color yellow = sf::Color::Yellow;
-    rt::Color ambientLight(0.2f, 0.2f, 0.2f);
+    rt::Color ambientLight(0.25f, 0.25f, 0.25f);
 
-    objects.push_back(new rt::Sphere({700.f, 300.f, -60.f}, 100, {blue.r, blue.g, blue.b}));
-    objects.push_back(new rt::Sphere({300.f, 100.f, 0.f}, 200, {cyan.r, cyan.g, cyan.b}));
-    objects.push_back(new rt::Sphere({500.f, 500.f, 0.f}, 150, {magenta.r, magenta.g, magenta.b}));
-   
-    objects.push_back(new rt::Plane({0.f, 0.f, -1.f}, {0.f, 0.f, 0.f}, {yellow.r, yellow.g, yellow.b}));
+    objects.push_back(new rt::Sphere({-300.f, -100.f, -500.f}, 100, {{blue.r, blue.g, blue.b}, 0.45f}));
+    objects.push_back(new rt::Sphere({-800.f, 100.f, -1000.f}, 200, {{cyan.r, cyan.g, cyan.b}, 0.75}));
+    objects.push_back(new rt::Sphere({300.f, 100.f, -700.f}, 150, {{magenta.r, magenta.g, magenta.b}, 0.5f}));
 
-    lights.emplace_back(rt::Light({0.f, 240.f, 50.f}, {1.f, 1.f, 1.f}));
+    objects.push_back(new rt::Plane({0.f, 1.f, 0.f}, {0.f, -200.f, 0.f}, {yellow.r, yellow.g, yellow.b}));
+
+    lights.emplace_back(rt::Light({-500.f, 240.f, -800.f}, {1.f, 1.f, 1.f}));
     //lights.emplace_back(rt::Light({3200.f, 3000.f, -1000.f}, {0.6f, 0.7f, 1.f}));
-    lights.emplace_back(rt::Light({600.f, 0.f, -100.f}, {1.0f, 0.25f, 0.25f}));
+    lights.emplace_back(rt::Light({600.f, 300.f, -1000.f}, {1.0f, 0.25f, 0.25f}));
+
+    float imageAspectRatio = width / (float) height; // assuming width > height 
+    float fov = 90.0;
 
     for (unsigned int y = 0; y < height; ++y)
     {
-        ray.origin().y = y;
+        float Py = (1 - 2 * ((y + 0.5) / height)) * tan(fov / 2.0 * M_PI / 180.0);
+        
+        //ray.origin().y = y;
         for (unsigned int x = 0; x < width; ++x)
         {
-            ray.origin().x = x;
+            float Px = (2 * ((x + 0.5) / width) - 1) * tan(fov / 2 * M_PI / 180.0) * imageAspectRatio; 
+            //ray.origin().x = x;
 
-            rt::Ray r = ray;
+            rt::Ray r(ray.origin(), rt::maths::Vector3f(Px, Py, -1) - ray.origin());
+            //rt::Ray r = ray;
+
+            //  std::cout << "Origin : " << r.origin() << " | Direction : " << r.direction() << std::endl;
+            //  std::cout << "Px : " << Px << " | Py " << Py << std::endl;
+            //  std::cout << "Result = " << rt::maths::Vector3f(Px, Py, 1) - r.origin() << std::endl;
+
             unsigned int i = (x + y * width) * 4;
             float reflectionCoeff = 1.0f;
             int level = 10;
@@ -74,17 +85,13 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
             do {
                 float t = 20000.0f;
                 rt::Object *obj = nullptr;
-                unsigned int j = 0;
-                unsigned int closest = 0;
 
                 for (auto &object : objects)
                 {
                     if (object->intersect(r, &t))
                     {
                         obj = object;
-                        closest = j;
                     }
-                    j++;
                 }
                // std::cout << "J = " << j << std::endl;
                // if (closest == 3)
@@ -117,7 +124,7 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
                             {
                                 auto distanceFromPtoObject = shadowRay.origin() - object->center();
                                 
-                                if (t > 0.001 && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
+                                if (t > 0.001f && distanceFromPtoObject.norm() < distanceFromPtoLight.norm())
                                 {
                                     shadowed = true;
                                     break;
@@ -127,7 +134,7 @@ static void fillFramebuffer(sf::Uint8 *pixels, unsigned int width, unsigned int 
 
                         if (!shadowed)
                         {
-                            color += light.color() * diffuseCoeff * scalar * reflectionCoeff;
+                            color += (light.color() * diffuseCoeff * scalar * reflectionCoeff);
                         }
                         // else
                         // {

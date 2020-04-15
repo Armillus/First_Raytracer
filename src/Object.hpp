@@ -3,13 +3,13 @@
 #include <string>
 
 #include "Ray.hpp"
-#include "Color.hpp"
+#include "Material.hpp"
 
 namespace rt {
 
     class Object {
     public:
-        Object(const Color &color) : _color(color), _reflection(0.5) {}
+        Object(const Color &color, float reflection = 0.0f) : _material(color, reflection) {}
         virtual ~Object() = default;
 
         virtual bool intersect(Ray &ray, float *t) = 0;
@@ -19,20 +19,16 @@ namespace rt {
 
         inline Color &color()
         {
-            return _color;
+            return _material.color;
         }
 
         inline float &reflection(void)
         {
-            return _reflection;
+            return _material.reflection;
         }
 
-
-
-
     private:
-        Color _color;
-        float _reflection;
+        Material _material;
     };
 
 }

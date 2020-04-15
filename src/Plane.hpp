@@ -9,7 +9,7 @@ namespace rt {
     class Plane : public Object {
     public:
         Plane(const maths::Vector3f &normal, const maths::Vector3f &point, const Color &color = Color(0u, 255u, 0u))
-            : Object(color), _normal(normal), _point(point)
+            : Object(color, 0), _normal(normal), _point(point)
         {}
 
         ~Plane() = default;
@@ -21,8 +21,8 @@ namespace rt {
             //std::cout << "denominator = " << denominator << " | dir = " << ray.direction() << " | normal = " << _normal << std::endl;
             if (std::abs(denominator) > 0.001f)
             {
-                //float res = ((_point - ray.origin()) * _normal) / denominator;
-                float res = ((ray.origin() * _normal) + 100.0) / (-denominator);
+                float res = ((_point - ray.origin()) * _normal) / denominator;
+                //float res = ((ray.origin() * _normal) + 100.0) / (-denominator);
 
                 if (res >= 0.001f && res < *t)
                 {
