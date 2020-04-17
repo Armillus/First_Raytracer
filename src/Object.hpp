@@ -9,10 +9,11 @@ namespace rt {
 
     class Object {
     public:
+        Object(const Material &mat) : _material(mat) {}
         Object(const Color &color, float reflection = 0.0f) : _material(color, reflection) {}
         virtual ~Object() = default;
 
-        virtual bool intersect(Ray &ray, float *t) = 0;
+        virtual bool intersect(const Ray &ray, float *t) = 0;
         virtual maths::Vector3f normalSurface(maths::Vector3f &p) = 0;
 
         virtual maths::Vector3f &center() = 0;

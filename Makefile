@@ -9,7 +9,15 @@ NAME	=	raytracer
 
 CXX	=	g++ -g3 -g
 
-SRCS	=	src/main.cpp
+SRCS	=	src/main.cpp		\
+			src/Camera.cpp		\
+			src/Scene.cpp		\
+			src/Color.cpp		\
+			src/Core.cpp		\
+			src/FrameBuffer.cpp	\
+			src/RayTracer.cpp	\
+			src/Renderer.cpp	\
+			src/Viewer.cpp	\
 
 OBJS	=	$(SRCS:.cpp=.o)
 

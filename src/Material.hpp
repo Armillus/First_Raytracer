@@ -6,7 +6,7 @@ namespace rt {
 
     class Material {
     public:
-        Material(const Color &color, float reflection = 0)
+        Material(const Color &color, float reflection = 0.0f)
             : color(color), reflection(reflection)
         {}
 

@@ -7,20 +7,20 @@ namespace rt {
     class Ray {
     public:
         Ray(const maths::Vector3f &origin, const maths::Vector3f &direction)
-            : _origin(origin), _direction(direction)
+            : _origin(origin), _direction(direction.normalize())
         {
-            _direction = _direction.normalize();
+            
         }
 
         ~Ray() = default;
 
 
-        inline maths::Vector3f &origin()
+        inline const maths::Vector3f &origin() const
         {
             return _origin;
         }
 
-        inline maths::Vector3f &direction()
+        inline const maths::Vector3f &direction() const
         {
             return _direction;
         }

@@ -58,7 +58,7 @@ namespace rt {
             It means that it is a quadratic equation, or a second degree polynomial.
             The value of the discriminant delta will be the number of intersections between the ray and the sphere.
         */
-        bool intersect(Ray &ray, float *t) override
+        bool intersect(const Ray &ray, float *t) override
         {
             // To determine if a ray intersects with the sphere, we don't need to know t.
 
@@ -82,13 +82,18 @@ namespace rt {
             // We are solving the discriminant of the second degree polynomial.
             float delta = b * b - 4 * a * c;
 
+  //          std::cout << a << std::endl;
+           // std::cout << ray.origin() << std::endl;
+//               std::cout << ray.direction() << std::endl;
+           // std::cout << delta << std::endl;
             // If delta < 0, there is no intersection. Otherwise, it means there are one or two intersections.
             if (delta < 0)
                 return false;
+          //  std::cout << *t << std::endl;
 
             float deltaSquareRoot = ::sqrtf(delta);
-            float t0 = (-b + deltaSquareRoot) / 2;
-            float t1 = (-b - deltaSquareRoot) / 2;
+            float t0 = (-b + deltaSquareRoot) / 2.0f;
+            float t1 = (-b - deltaSquareRoot) / 2.0f;
 
             if (t0 > t1)
                 t0 = t1;
