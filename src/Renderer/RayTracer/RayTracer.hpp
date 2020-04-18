@@ -46,7 +46,7 @@ namespace rt {
         bool isShadowed(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight);
         bool computeDiffuseShadows(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight);
 
-        Color computeReflections(const Scene &scene, const Ray &ray,
+        void computeReflections(const Scene &scene, const Ray &ray,
                                  std::shared_ptr<Object> object, float t,
                                  uint depth, float reflectionCoeff);
 

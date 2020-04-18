@@ -11,7 +11,7 @@ namespace rt {
     class SfmlLibrary : public IGraphicalLibrary {
     public:
         SfmlLibrary(const Resolution &screenRes, const std::string &windowTitle)
-            : _window(sf::VideoMode(screenRes.width, screenRes.height), std::string(windowTitle)),
+            : _window(sf::VideoMode(screenRes.width, screenRes.height), windowTitle),
             _screenResolution(screenRes), _isAlive(true)
         {
             _texture.create(screenRes.width, screenRes.height);

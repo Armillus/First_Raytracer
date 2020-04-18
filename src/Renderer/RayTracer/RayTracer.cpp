@@ -122,7 +122,7 @@ bool rt::RayTracer::computeDiffuseShadows(const Scene &scene, const Ray &shadowR
     return (false);
 }
 
-rt::Color rt::RayTracer::computeReflections(
+void rt::RayTracer::computeReflections(
     const Scene &scene,
     const Ray &ray,
     std::shared_ptr<Object> object,
@@ -131,7 +131,7 @@ rt::Color rt::RayTracer::computeReflections(
     float reflectionCoeff)
 {
     if (!(_enabledOptions & Reflections) || depth == 0 || reflectionCoeff <= 0.001f)
-        return (Color::Black);
+        return;
 
     auto V = ray.direction();
 
@@ -144,7 +144,7 @@ rt::Color rt::RayTracer::computeReflections(
     // The reflected ray is perfectly symmetric to the original ray
     rt::Ray reflectedRay(P, V - (N * 2.f * (V * N)));
 
-    return (computePixelColor(scene, reflectedRay, depth - 1, reflectionCoeff, false));
+    computePixelColor(scene, reflectedRay, depth - 1, reflectionCoeff, false);
 }
 
 std::pair<std::shared_ptr<rt::Object>, float> rt::RayTracer::findClosestObject(const Scene &scene, const Ray &ray)

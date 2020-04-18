@@ -21,7 +21,7 @@ namespace rt {
         static const Color Black;
         static const Color White;
 
-        inline Color &operator+=(const Color &color)
+        inline constexpr Color &operator+=(const Color &color)
         {
             r = std::min(r + color.r, 255);
             g = std::min(g + color.g, 255);
@@ -66,7 +66,7 @@ namespace rt {
             return Color(red, green, blue);
         }
 
-        inline Color &operator*=(const Color &color)
+        inline constexpr Color &operator*=(const Color &color)
         {
             r = (r * color.r) / 255.f;
             g = (g * color.g) / 255.f;
@@ -75,7 +75,7 @@ namespace rt {
             return *this;
         }
 
-        inline Color operator*=(float scalar)
+        inline constexpr Color &operator*=(float scalar)
         {
             r = (r / 255.f) * scalar;
             g = (g / 255.f) * scalar;

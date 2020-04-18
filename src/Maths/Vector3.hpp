@@ -13,14 +13,14 @@ namespace rt::maths {
         Vector3(const T &x, const T &y, const T &z) : x(x), y(y), z(z) {}
         ~Vector3() = default;
 
-        inline float norm(void) const
+        inline constexpr float norm(void) const
         {
             // Remember the Pythagore theorem ? For 3D, just add z
 
             return (::sqrtf(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2)));
         }
 
-        inline Vector3<T> &operator=(const Vector3<T> &v)
+        inline constexpr Vector3<T> &operator=(const Vector3<T> &v)
         {
             x = v.x;
             y = v.y;
@@ -29,19 +29,19 @@ namespace rt::maths {
             return *this;
         }
 
-        inline Vector3<T> normalize(void) const
+        inline constexpr Vector3<T> normalize(void) const
         {
             float vectorLength = norm();
 
             return Vector3<T>(x / vectorLength, y / vectorLength, z / vectorLength);
         }
         
-        inline Vector3<T> operator-(const Vector3<T> &v) const
+        inline constexpr Vector3<T> operator-(const Vector3<T> &v) const
         {
             return Vector3<T>(x - v.x, y - v.y, z - v.z);
         }
 
-        inline Vector3<T> operator*(float t) const
+        inline constexpr Vector3<T> operator*(float t) const
         {
             return Vector3<T>(x * t, y * t, z * t);
         }
@@ -51,12 +51,12 @@ namespace rt::maths {
          * @param v The other vector used to compute the operation.
          * 
          */
-        inline T operator*(const Vector3<T> &v) const
+        inline constexpr T operator*(const Vector3<T> &v) const
         {
             return (x * v.x + y * v.y + z * v.z);
         }
 
-        inline Vector3<T> operator+(const Vector3<T> &v) const
+        inline constexpr Vector3<T> operator+(const Vector3<T> &v) const
         {
             return Vector3<T>(x + v.x, y + v.y, z + v.z);
         }

@@ -23,6 +23,8 @@ void rt::Scene::createObjects(void)
                         maths::Vector3f(0.f, -200.f, 0.f), Material(sf::Color::Yellow, 0.0f)));
     _objects.push_back(std::make_shared<rt::Plane>(maths::Vector3f(0.f, 0.f, -1.f),
                         maths::Vector3f(0.f, 0.f, -1000.f), Material(Color(0.7f, 0.7f, 0.7f), 1.0f)));
+    // _objects.push_back(std::make_shared<rt::Plane>(maths::Vector3f(0.f, 0.f, -1.f),
+    //                     maths::Vector3f(0.f, 0.f, 100.f), Material(Color(1.0f, 1.0f, 1.0f), 1.0f)));
 }
 
 void rt::Scene::createLights(void)
