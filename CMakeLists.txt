@@ -12,7 +12,7 @@ conan_basic_setup(TARGETS)
 ## Setting flags for linux, finding the thread package.
 if (UNIX)
     find_package(Threads)
-    set(CMAKE_CXX_FLAGS "-g3 -lgcov --coverage -Ofast -pipe -Wall -Wextra -std=c++17") #-fsanitize=address")
+    set(CMAKE_CXX_FLAGS "-g3 -Ofast -pipe -Wall -Wextra -std=c++17") #-fsanitize=address")
 endif()
 
 ## Add valgring flag

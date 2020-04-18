@@ -10,7 +10,6 @@ namespace rt {
     class Object {
     public:
         Object(const Material &mat) : _material(mat) {}
-        Object(const Color &color, float reflection = 0.0f) : _material(color, reflection) {}
         virtual ~Object() = default;
 
         virtual bool intersect(const Ray &ray, float *t) = 0;
@@ -23,9 +22,9 @@ namespace rt {
             return _material.color;
         }
 
-        inline float &reflection(void)
+        inline Material &material()
         {
-            return _material.reflection;
+            return _material;
         }
 
     private:

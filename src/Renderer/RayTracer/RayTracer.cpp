@@ -31,11 +31,8 @@ void rt::RayTracer::render(const Scene &scene, const Camera &camera, uint reflec
 
 rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, uint depth, float reflectionCoeff, bool isPrimaryRay)
 {
-    static Color pixelColor(scene.ambientLightCoefficient());
+    Color pixelColor(scene.ambientLightCoefficient());
 
-    if (isPrimaryRay)
-        pixelColor = Color(scene.ambientLightCoefficient());
-    
     auto closest = findClosestObject(scene, ray);
     auto closestObj = closest.first;
     auto t = closest.second;
@@ -48,8 +45,8 @@ rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, u
     pixelColor += computeLightsAndShadows(scene, ray, closestObj, t, reflectionCoeff);
     
     // Compute reflections
-    reflectionCoeff *= closestObj->reflection();
-    computeReflections(scene, ray, closestObj, t, depth, reflectionCoeff);
+    reflectionCoeff *= closestObj->material().reflectivity;
+    pixelColor += computeReflections(scene, ray, closestObj, t, depth, reflectionCoeff);
 
     return (pixelColor);
 }
@@ -67,8 +64,10 @@ rt::Color rt::RayTracer::computeGlobalIllumination(const Scene &scene, const Ray
     Color pixelColor(Color::Black);
     float bias = DEFAULT_BIAS;
 
+    auto V = ray.direction();
+
     // The intersection point
-    auto P = ray.origin() + ray.direction() * t;
+    auto P = ray.origin() + V * t;
 
     // The normal to the object surface
     auto N = object->normalSurface(P);
@@ -86,7 +85,17 @@ rt::Color rt::RayTracer::computeGlobalIllumination(const Scene &scene, const Ray
 
         if (!isShadowed(scene, shadowRay, distanceFromPtoLight))
         {
-            pixelColor += (light->color() * scene.diffuseLightCoefficient() * angle * reflectionCoeff);
+            auto k = object->material().diffuseCoefficient;
+
+            // Lambertian shading : diffuse shading
+            pixelColor += (light->color() * k * angle * reflectionCoeff);
+    
+            // Blinn-Phong shading
+            auto H = (V + distanceFromPtoLight).normalize();
+            k = object->material().specularCoefficient;
+            auto n = object->material().shininess;
+
+            pixelColor += (light->color() * k * std::pow(std::max(0.0f, N * H), n));
         }
     }
     return (pixelColor);
@@ -97,10 +106,10 @@ bool rt::RayTracer::isShadowed(const Scene &scene, const Ray &shadowRay, const m
     if (!(_enabledOptions & Shadows))
         return (false);
 
-    return (computeDiffuseShadows(scene, shadowRay, distanceFromPtoLight));
+    return (detectShadows(scene, shadowRay, distanceFromPtoLight));
 }
 
-bool rt::RayTracer::computeDiffuseShadows(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight)
+bool rt::RayTracer::detectShadows(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight)
 {
     float t = std::numeric_limits<float>::max();
 
@@ -122,7 +131,7 @@ bool rt::RayTracer::computeDiffuseShadows(const Scene &scene, const Ray &shadowR
     return (false);
 }
 
-void rt::RayTracer::computeReflections(
+rt::Color rt::RayTracer::computeReflections(
     const Scene &scene,
     const Ray &ray,
     std::shared_ptr<Object> object,
@@ -131,7 +140,7 @@ void rt::RayTracer::computeReflections(
     float reflectionCoeff)
 {
     if (!(_enabledOptions & Reflections) || depth == 0 || reflectionCoeff <= 0.001f)
-        return;
+        return (Color::Black);
 
     auto V = ray.direction();
 
@@ -144,7 +153,7 @@ void rt::RayTracer::computeReflections(
     // The reflected ray is perfectly symmetric to the original ray
     rt::Ray reflectedRay(P, V - (N * 2.f * (V * N)));
 
-    computePixelColor(scene, reflectedRay, depth - 1, reflectionCoeff, false);
+    return (computePixelColor(scene, reflectedRay, depth - 1, reflectionCoeff, false) * reflectionCoeff);
 }
 
 std::pair<std::shared_ptr<rt::Object>, float> rt::RayTracer::findClosestObject(const Scene &scene, const Ray &ray)
