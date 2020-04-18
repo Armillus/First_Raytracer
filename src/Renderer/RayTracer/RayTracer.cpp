@@ -102,7 +102,7 @@ bool rt::RayTracer::isShadowed(const Scene &scene, const Ray &shadowRay, const m
 
 bool rt::RayTracer::computeDiffuseShadows(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight)
 {
-    float t = 20000.0f;
+    float t = std::numeric_limits<float>::max();
 
     for (auto &object : scene.objects())
     {
@@ -149,7 +149,7 @@ void rt::RayTracer::computeReflections(
 
 std::pair<std::shared_ptr<rt::Object>, float> rt::RayTracer::findClosestObject(const Scene &scene, const Ray &ray)
 {
-    float t = 20000.0f;
+    float t = std::numeric_limits<float>::max();
     std::shared_ptr<Object> closest = nullptr;
 
     for (auto &object : scene.objects())

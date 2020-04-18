@@ -17,6 +17,11 @@ namespace rt {
             _texture.create(screenRes.width, screenRes.height);
             _sprite.setTexture(_texture);
             _window.setFramerateLimit(60);
+
+            auto desktop = sf::VideoMode::getDesktopMode();
+            int x = desktop.width / 2 - _window.getSize().x / 2;
+            int y = desktop.height / 2 - _window.getSize().y / 2;
+            _window.setPosition({x, y});
         }
 
         ~SfmlLibrary() override = default;
