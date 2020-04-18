@@ -41,8 +41,8 @@ namespace rt {
         Color computePixelColor(const Scene &scene, const Ray &ray, uint depth, float reflectionCoeff, bool isPrimaryRay);
         std::pair<std::shared_ptr<Object>, float> findClosestObject(const Scene &scene, const Ray &ray);
 
-        Color computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t, float reflectionCoeff);
-        Color computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t, float reflectionCoeff);
+        Color computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);
+        Color computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);
         bool isShadowed(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight);
         bool detectShadows(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight);
 

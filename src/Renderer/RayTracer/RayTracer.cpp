@@ -42,7 +42,7 @@ rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, u
     
     // Compute Lights and Shadows effects
     pixelColor *= closestObj->color();
-    pixelColor += computeLightsAndShadows(scene, ray, closestObj, t, reflectionCoeff);
+    pixelColor += computeLightsAndShadows(scene, ray, closestObj, t);
     
     // Compute reflections
     reflectionCoeff *= closestObj->material().reflectivity;
@@ -51,15 +51,15 @@ rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, u
     return (pixelColor);
 }
 
-rt::Color rt::RayTracer::computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t, float reflectionCoeff)
+rt::Color rt::RayTracer::computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t)
 {
     if (!(_enabledOptions & Illumination))
         return (Color::Black);
 
-    return (computeGlobalIllumination(scene, ray, object, t, reflectionCoeff));
+    return (computeGlobalIllumination(scene, ray, object, t));
 }
 
-rt::Color rt::RayTracer::computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t, float reflectionCoeff)
+rt::Color rt::RayTracer::computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t)
 {
     Color pixelColor(Color::Black);
     float bias = DEFAULT_BIAS;
@@ -88,7 +88,7 @@ rt::Color rt::RayTracer::computeGlobalIllumination(const Scene &scene, const Ray
             auto k = object->material().diffuseCoefficient;
 
             // Lambertian shading : diffuse shading
-            pixelColor += (light->color() * k * angle * reflectionCoeff);
+            pixelColor += (light->color() * k * angle);
     
             // Blinn-Phong shading
             auto H = (V + distanceFromPtoLight).normalize();
