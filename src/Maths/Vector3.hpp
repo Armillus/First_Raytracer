@@ -41,6 +41,11 @@ namespace rt::maths {
             return Vector3<T>(x - v.x, y - v.y, z - v.z);
         }
 
+        inline constexpr Vector3<T> operator-(void) const
+        {
+            return Vector3<T>(-x, -y, -z);
+        }
+
         inline constexpr Vector3<T> operator*(float t) const
         {
             return Vector3<T>(x * t, y * t, z * t);

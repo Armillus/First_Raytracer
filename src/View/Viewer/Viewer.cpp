@@ -11,7 +11,7 @@ void rt::Viewer::show(
     std::unique_ptr<Renderer> &renderer)
 {
     // Render scene
-    if (_scene.hasChangedSinceLastFrame())
+    if (_scene.hasChangedSinceLastFrame() || _camera.hasChangedSinceLastFrame())
         renderer->render(_scene, _camera);
 
     // Display the resulting scene

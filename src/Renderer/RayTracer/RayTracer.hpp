@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <algorithm>
 
 #include "Renderer.hpp"
 
@@ -14,8 +15,8 @@ namespace rt {
         Illumination = 8,
     };
 
-    auto constexpr const DEFAULT_OPTIONS = Shadows | Reflections | Illumination;
-    auto constexpr const DEFAULT_REFLECTIONS_DEPTH = 20u;
+    auto constexpr const DEFAULT_OPTIONS = Shadows | Reflections | Illumination | Refractions;
+    auto constexpr const DEFAULT_REFLECTIONS_DEPTH = 5u;
 
     auto constexpr const DEFAULT_BIAS = 0.5f;
 
@@ -38,7 +39,7 @@ namespace rt {
         }
 
     private:
-        Color computePixelColor(const Scene &scene, const Ray &ray, uint depth, float reflectionCoeff, bool isPrimaryRay);
+        Color computePixelColor(const Scene &scene, const Ray &ray, uint depth, float reflectionCoeff, float refractionCoeff, bool isPrimaryRay);
         std::pair<std::shared_ptr<Object>, float> findClosestObject(const Scene &scene, const Ray &ray);
 
         Color computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);
@@ -48,7 +49,33 @@ namespace rt {
 
         Color computeReflections(const Scene &scene, const Ray &ray,
                                  std::shared_ptr<Object> object, float t,
-                                 uint depth, float reflectionCoeff);
+                                 uint depth, float reflectionCoeff, float refractionCoeff);
+
+        Color computeRefractions(const Scene &scene, const Ray &ray,
+                                 std::shared_ptr<Object> object, float t,
+                                 uint depth, float &reflectionCoeff, float refractionCoeff);
+
+        float fresnel(const maths::Vector3f &I, maths::Vector3f &N, const float &ior) 
+        { 
+            float cosi = std::clamp(-1.0f, 1.0f, I * N); 
+            float etai = 1, etat = ior;
+            if (cosi > 0) { std::swap(etai, etat); } 
+            // Compute sini using Snell's law
+            float sint = etai / etat * sqrtf(std::max(0.f, 1 - cosi * cosi)); 
+            // Total internal reflection
+            if (sint >= 1) { 
+                return (1.0f);
+            } 
+            else { 
+                float cost = sqrtf(std::max(0.f, 1 - sint * sint)); 
+                cosi = fabsf(cosi); 
+                float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost)); 
+                float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost)); 
+                return ((Rs * Rs + Rp * Rp) / 2.0f); 
+            } 
+            // As a consequence of the conservation of energy, transmittance is given by:
+            // kt = 1 - kr;
+        } 
 
         uint _enabledOptions;
         uint _reflectionsDepth;

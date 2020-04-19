@@ -23,10 +23,10 @@ void rt::Core::setCallbacks(void)
 
 void rt::Core::loadScene(void)
 {
-    Scene scene;
+    //Scene scene;
     //Camera camera(0, 0, 0, );
 
-    _viewer.setScene(scene);
+    //_viewer.setScene(scene);
     //_viewer.setCamera(camera);
 }
 
@@ -36,8 +36,28 @@ int rt::Core::run(void)
     {
         auto events = _graphicLibrary->handleEvents();
 
+        processEvents(events);
         _viewer.show(_graphicLibrary, _renderer);
     }
 
     return (0);
+}
+
+void rt::Core::processEvents(std::queue<Event> &events)
+{
+    while (!events.empty())
+    {
+        Event event = events.back();
+
+        switch (event)
+        {
+            case Left: _viewer.moveCamToLeft(); break;
+            case Right: _viewer.moveCamToRight(); break;
+            case Up: _viewer.moveCamUp(); break;
+            case Down: _viewer.moveCamDown(); break;
+            default: break;
+        }
+
+        events.pop();
+    }
 }

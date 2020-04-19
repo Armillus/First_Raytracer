@@ -15,10 +15,13 @@ namespace rt {
         ~Core() = default;
 
         int run(void);
+
+    private:
         void setCallbacks(void);
         void loadScene();
 
-    private:
+        void processEvents(std::queue<Event> &events);
+
         std::unique_ptr<IGraphicalLibrary> _graphicLibrary;
         std::unique_ptr<Renderer> _renderer;
         Viewer _viewer;

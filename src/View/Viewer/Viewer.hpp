@@ -26,6 +26,26 @@ namespace rt {
             _scene = scene;
         }
 
+        inline void moveCamToRight(float step = 1.0f)
+        {
+            _camera.origin().x += step;
+        }
+
+        inline void moveCamToLeft(float step = 1.0f)
+        {
+            _camera.origin().x -= step;
+        }
+
+        inline void moveCamUp(float step = 1.0f)
+        {
+            _camera.origin().y += step;
+        }
+
+        inline void moveCamDown(float step = 1.0f)
+        {
+            _camera.origin().y -= step;
+        }
+
         inline void changeScreenResolution(const Resolution &screenRes)
         {
             _camera.resizeImagePlane(screenRes);

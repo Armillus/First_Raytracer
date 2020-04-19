@@ -19,11 +19,13 @@ namespace rt {
         inline void setOrigin(const maths::Vector3f &newOrigin)
         {
             _origin = newOrigin;
+            _hasChanged = true;
         }
 
         inline void setFieldOfView(float newFov)
         {
             _fov = maths::toRadians(newFov);
+            _hasChanged = true;
         }
 
         inline void resizeImagePlane(unsigned int width, unsigned int height)
@@ -31,12 +33,29 @@ namespace rt {
             Resolution screenRes = {width, height};
 
             resizeImagePlane(screenRes);
+            _hasChanged = true;
         }
 
         inline void resizeImagePlane(const Resolution &screenRes)
         {
             _screenRes = screenRes;
             computeAspectRatio();
+        }
+
+        inline auto &origin(void)
+        {
+            _hasChanged = true;
+            return _origin;
+        }
+
+        inline auto constexpr hasChangedSinceLastFrame(void)
+        {
+            if (!_hasChanged)
+                return (false);
+
+            _hasChanged = false;
+
+            return (true);
         }
 
     private:
@@ -64,6 +83,7 @@ namespace rt {
         Resolution _screenRes;
         float _fov;
         float _aspectRatio;
+        bool _hasChanged;
     };
 
 }
