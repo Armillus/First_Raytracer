@@ -40,7 +40,7 @@ namespace rt {
 
     private:
         Color computePixelColor(const Scene &scene, const Ray &ray, uint depth, float reflectionCoeff, float refractionCoeff, bool isPrimaryRay);
-        std::pair<std::shared_ptr<Object>, float> findClosestObject(const Scene &scene, const Ray &ray);
+        std::optional<std::pair<std::shared_ptr<rt::Object>, float>>  findClosestObject(const Scene &scene, const Ray &ray);
 
         Color computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);
         Color computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);

@@ -36,11 +36,12 @@ rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, u
     Color pixelColor(scene.ambientLightCoefficient());
 
     auto closest = findClosestObject(scene, ray);
-    auto closestObj = closest.first;
-    auto t = closest.second;
 
-    if (!closestObj)
+    if (!closest.has_value())
         return (isPrimaryRay ? pixelColor : Color::Black);
+
+    auto closestObj = closest->first;
+    auto t = closest->second;
     
     auto P = ray.origin() + ray.direction() * t;
 
@@ -222,7 +223,7 @@ rt::Color rt::RayTracer::computeRefractions(
     return (computePixelColor(scene, refractedRay, depth - 1, reflexionCoeff, refractionCoeff, false) * (1.0f - kr) * object->material().transmittance);
 }
 
-std::pair<std::shared_ptr<rt::Object>, float> rt::RayTracer::findClosestObject(const Scene &scene, const Ray &ray)
+std::optional<std::pair<std::shared_ptr<rt::Object>, float>> rt::RayTracer::findClosestObject(const Scene &scene, const Ray &ray)
 {
     float t = std::numeric_limits<float>::max();
     std::shared_ptr<Object> closest = nullptr;
@@ -235,5 +236,8 @@ std::pair<std::shared_ptr<rt::Object>, float> rt::RayTracer::findClosestObject(c
         }
     }
 
-    return {closest, t};
+    if (closest == nullptr)
+        return std::nullopt;
+
+    return std::optional<std::pair<std::shared_ptr<rt::Object>, float>>{{closest, t}};
 }
