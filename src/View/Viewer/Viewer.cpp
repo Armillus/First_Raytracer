@@ -15,7 +15,7 @@ void rt::Viewer::show(
         renderer->render(_scene, _camera);
 
     // Display the resulting scene
-    graphicLibrary->clear(Color::Black);
+    graphicLibrary->clear();
     graphicLibrary->draw(renderer->frameBuffer());
     graphicLibrary->display();
 }

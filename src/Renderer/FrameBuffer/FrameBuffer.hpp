@@ -9,14 +9,14 @@ namespace rt {
 
     class FrameBuffer {
     public:
-        FrameBuffer(unsigned int width, unsigned int height);
+        FrameBuffer(uint width, uint height);
         ~FrameBuffer();
 
         void resize(const Resolution &screenRes);
-        void resize(unsigned int width, unsigned int height);
-        void updatePixelColor(unsigned int x, unsigned int y, const Color &color);
+        void resize(uint width, uint height);
+        void updatePixelColor(uint x, uint y, const Color &color);
 
-        inline const auto constexpr buffer(void) const
+        inline constexpr void *buffer(void) const
         {
             return _buffer;
         }
@@ -24,11 +24,14 @@ namespace rt {
         inline void destroy(void)
         {
             if (_buffer)
+            {
                 delete[] _buffer;
+                _buffer = nullptr;
+            }
         }
 
     private:
-        inline uint32_t *createBuffer(unsigned int width, unsigned int height)
+        inline uint32_t *createBuffer(uint width, uint height)
         {
             return (new uint32_t[width * height]);
         }

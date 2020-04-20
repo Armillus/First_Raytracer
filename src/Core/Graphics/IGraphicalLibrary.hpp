@@ -20,7 +20,7 @@ namespace rt {
 
         virtual std::queue<Event> handleEvents(void) = 0;
 
-        virtual void clear(const Color &color) = 0;
+        virtual void clear(const Color &color = Color::Black) = 0;
         virtual void draw(const FrameBuffer &frameBuffer) = 0;
         virtual void display(void) = 0;
 

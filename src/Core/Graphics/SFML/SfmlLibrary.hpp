@@ -29,7 +29,7 @@ namespace rt {
 
         std::queue<Event> handleEvents(void) override;
 
-        inline void clear(const Color &color) override
+        inline void clear(const Color &color = Color::Black) override
         {
             sf::Color clearColor(color.r, color.g, color.b, color.a);
 
@@ -38,7 +38,7 @@ namespace rt {
     
         inline void draw(const FrameBuffer &frameBuffer) override
         {
-            _texture.update((sf::Uint8 *)(frameBuffer.buffer()));
+            _texture.update(static_cast<sf::Uint8 *>(frameBuffer.buffer()));
             _window.draw(_sprite);
         }
 

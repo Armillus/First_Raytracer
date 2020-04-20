@@ -34,6 +34,11 @@ namespace rt::maths {
             return (x == v.x && y == v.y && z == v.z);
         }
 
+        inline constexpr bool operator!=(const Vector3<T> &v)
+        {
+            return (x != v.x || y != v.y || z != v.z);
+        }
+
         inline constexpr Vector3<T> normalize(void) const
         {
             float vectorLength = norm();

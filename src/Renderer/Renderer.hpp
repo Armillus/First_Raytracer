@@ -8,8 +8,6 @@ namespace rt {
 
     class Renderer {
     public:
-        //Renderer(const std::string &confFilepath)
-
         Renderer(const Resolution &screenRes);
         virtual ~Renderer() = default;
 
