@@ -29,6 +29,11 @@ namespace rt::maths {
             return *this;
         }
 
+        inline constexpr bool operator==(const Vector3<T> &v)
+        {
+            return (x == v.x && y == v.y && z == v.z);
+        }
+
         inline constexpr Vector3<T> normalize(void) const
         {
             float vectorLength = norm();
@@ -49,6 +54,15 @@ namespace rt::maths {
         inline constexpr Vector3<T> operator*(float t) const
         {
             return Vector3<T>(x * t, y * t, z * t);
+        }
+
+        inline constexpr Vector3<T> cross(const Vector3<T> &v) const
+        {
+            float cx = (y * v.z) - (z * v.y);
+            float cy = (z * v.x) - (x * v.z);
+            float cz = (x * v.y) - (y -v.x);
+
+            return Vector3<T>(cx, cy, cz);
         }
 
         /**
@@ -84,7 +98,7 @@ namespace rt::maths {
     template <typename T>
     inline std::ostream &operator<<(std::ostream &stream, const Vector3<T> &v)
     {
-        stream << "Vector3 --> (" << v.x << ", " << v.y << ", " << v.z << ")";
+        stream << "Vector3(" << v.x << ", " << v.y << ", " << v.z << ")";
         return (stream);
     }
 

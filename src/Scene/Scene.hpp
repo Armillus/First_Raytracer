@@ -11,6 +11,11 @@
 
 namespace rt {
 
+    auto constexpr const DEFAULT_STONE_TEXTURE_PATH = "./assets/textures/stone_HD.jpg";
+    auto constexpr const DEFAULT_EARTH_TEXTURE_PATH = "./assets/textures/earth_HD.jpg";
+    auto constexpr const DEFAULT_GOLD_TEXTURE_PATH = "./assets/textures/gold_HD.jpg";
+    auto constexpr const DEFAULT_CHECKERBOARD_TEXTURE_PATH = "./assets/textures/checkerboard.jpg";
+
     class Scene {
     public:
         //Scene(const std::string &configFilepath) {}

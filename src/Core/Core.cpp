@@ -12,6 +12,28 @@ rt::Core::Core([[maybe_unused]] int argc, [[maybe_unused]] const char **argv)
 
 void rt::Core::setCallbacks(void)
 {
+    setEventsCallbacks();
+    setResizeCallback();
+}
+
+void rt::Core::setEventsCallbacks(void)
+{
+    _eventsCallbacks[Event::Left] = [this](){ _viewer.moveCamToLeft(); };
+    _eventsCallbacks[Event::Right] = [this](){ _viewer.moveCamToRight(); };
+    _eventsCallbacks[Event::Up] = [this](){ _viewer.moveCameraForward(); };
+    _eventsCallbacks[Event::Down] = [this](){ _viewer.moveCameraBackward(); };
+
+    _eventsCallbacks[Event::W] = [this](){ _viewer.rotateCamUp(); };
+    _eventsCallbacks[Event::A] = [this](){ _viewer.rotateCamToLeft(); };
+    _eventsCallbacks[Event::D] = [this](){ _viewer.rotateCamToRight(); };
+    _eventsCallbacks[Event::S] = [this](){ _viewer.rotateCamDown(); };
+    
+    _eventsCallbacks[Event::Q] = [this](){ _viewer.moveCamUp(); };
+    _eventsCallbacks[Event::E] = [this](){ _viewer.moveCamDown(); };
+}
+
+void rt::Core::setResizeCallback(void)
+{
     _graphicLibrary->setResizeCallback([this]
         (const Resolution &screenRes)
         {
@@ -48,15 +70,10 @@ void rt::Core::processEvents(std::queue<Event> &events)
     while (!events.empty())
     {
         Event event = events.back();
+        auto callback = _eventsCallbacks.find(event);
 
-        switch (event)
-        {
-            case Left: _viewer.moveCamToLeft(); break;
-            case Right: _viewer.moveCamToRight(); break;
-            case Up: _viewer.moveCamUp(); break;
-            case Down: _viewer.moveCamDown(); break;
-            default: break;
-        }
+        if (callback != _eventsCallbacks.end())
+            callback->second();
 
         events.pop();
     }

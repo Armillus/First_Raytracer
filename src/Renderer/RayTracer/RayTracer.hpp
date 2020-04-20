@@ -16,7 +16,7 @@ namespace rt {
     };
 
     auto constexpr const DEFAULT_OPTIONS = Shadows | Reflections | Illumination | Refractions;
-    auto constexpr const DEFAULT_REFLECTIONS_DEPTH = 5u;
+    auto constexpr const DEFAULT_REFLECTIONS_DEPTH = 10u;
 
     auto constexpr const DEFAULT_BIAS = 0.5f;
 
@@ -57,7 +57,8 @@ namespace rt {
 
         float fresnel(const maths::Vector3f &I, maths::Vector3f &N, const float &ior) 
         { 
-            float cosi = std::clamp(-1.0f, 1.0f, I * N); 
+            float angle = I * N;
+            float cosi = std::clamp(-1.0f, 1.0f, angle); 
             float etai = 1, etat = ior;
             if (cosi > 0) { std::swap(etai, etat); } 
             // Compute sini using Snell's law

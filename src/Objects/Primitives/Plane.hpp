@@ -1,47 +1,32 @@
 #pragma once
 
-#include <iostream>
-
 #include "Object.hpp"
 
 namespace rt {
 
     class Plane : public Object {
     public:
-        Plane(const maths::Vector3f &normal, const maths::Vector3f &point, const Material &mat)
-            : Object(mat), _normal(normal), _point(point)
-        {}
+        Plane(const maths::Vector3f &normal,
+              const maths::Vector3f &point, const Material &mat);
+        Plane(const maths::Vector3f &normal,
+              const maths::Vector3f &point, const Material &mat, const std::string &textureFilepath);
 
-        ~Plane() = default;
+        ~Plane() override = default;
 
-        bool intersect(const Ray &ray, float *t)
-        {
-            float denominator = ray.direction() * _normal;
+        bool intersect(const Ray &ray, float *t) const override;
 
-            //std::cout << "denominator = " << denominator << " | dir = " << ray.direction() << " | normal = " << _normal << std::endl;
-            if (std::abs(denominator) > 0.001f)
-            {
-                float res = ((_point - ray.origin()) * _normal) / denominator;
-                //float res = ((ray.origin() * _normal) + 100.0) / (-denominator);
-
-                if (res >= 0.001f && res < *t)
-                {
-                    *t = res;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        inline maths::Vector3f normalSurface([[maybe_unused]] maths::Vector3f &p)
+        inline maths::Vector3f normalSurface([[maybe_unused]] maths::Vector3f &p) const override
         {
             return _normal;
         }
 
-        inline maths::Vector3f &center()
+        inline maths::Vector3f const &center() const override
         {
             return _point;
         }
+
+        Color color(const maths::Vector3f &point) const;
+
 
     private:
         maths::Vector3f _normal;

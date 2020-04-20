@@ -18,4 +18,10 @@ namespace rt {
         unsigned int height;
     };
 
+    inline std::ostream &operator<<(std::ostream &stream, const Resolution &res)
+    {
+        stream << "Resolution (" << res.width << ", " << res.height << ")";
+        return (stream);
+    }
+
 }

@@ -10,7 +10,7 @@ namespace rt {
 
     class Camera {
     public:
-        Camera(const maths::Vector3f &origin, const Resolution &screenRes, float fieldOfView = DEFAULT_FOV);
+        Camera(const maths::Vector3f &origin, const maths::Vector3f &lookAt, const Resolution &screenRes, float fieldOfView = DEFAULT_FOV);
         Camera(float x, float y, float z, unsigned int width, unsigned int height, float fieldOfView = DEFAULT_FOV);
         virtual ~Camera() = default;
 
@@ -33,19 +33,31 @@ namespace rt {
             Resolution screenRes = {width, height};
 
             resizeImagePlane(screenRes);
-            _hasChanged = true;
         }
 
         inline void resizeImagePlane(const Resolution &screenRes)
         {
-            _screenRes = screenRes;
+            _imagePlane = screenRes;
             computeAspectRatio();
+            _hasChanged = true;
         }
 
-        inline auto &origin(void)
+        inline auto constexpr &origin(void)
         {
             _hasChanged = true;
             return _origin;
+        }
+
+        inline auto constexpr &direction(void)
+        {
+            _hasChanged = true;
+            return _direction;
+        }
+
+        inline void computeDirection(void)
+        {
+            // _direction = (-_origin).normalize();
+            // _right = _direction.cross(_up);
         }
 
         inline auto constexpr hasChangedSinceLastFrame(void)
@@ -61,26 +73,29 @@ namespace rt {
     private:
         inline constexpr float normalizePixelInX(unsigned int x) const
         {
-            unsigned int width = _screenRes.width;
+            unsigned int width = _imagePlane.width;
 
             return ((2 * ((x + 0.5) / width) - 1) * tan(_fov) * _aspectRatio);
         }
 
         inline constexpr float normalizePixelInY(unsigned int y) const
         {
-            unsigned int height = _screenRes.height;
+            unsigned int height = _imagePlane.height;
 
             return (1 - 2 * ((y + 0.5) / height)) * tan(_fov);
         }
 
         inline void computeAspectRatio(void)
         {
-            _aspectRatio = _screenRes.width / (float) _screenRes.height;
+            _aspectRatio = _imagePlane.width / (float) _imagePlane.height;
         }
 
     protected:
         maths::Vector3f _origin;
-        Resolution _screenRes;
+        maths::Vector3f _direction;
+        maths::Vector3f _up;
+        maths::Vector3f _right;
+        Resolution _imagePlane;
         float _fov;
         float _aspectRatio;
         bool _hasChanged;

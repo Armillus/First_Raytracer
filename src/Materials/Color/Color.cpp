@@ -30,3 +30,9 @@ rt::Color::Color(float value, float a)
 {
 
 }
+
+rt::Color::Color() 
+    : r(0u), g(0u), b(0u), a(255u)
+{
+
+}

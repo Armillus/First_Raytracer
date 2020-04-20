@@ -15,6 +15,7 @@ namespace rt {
         Color(float r, float g, float b, float a = 1.0f);
         Color(float value, float a = 1.0f);
         Color(uint value, uint a = 255);
+        Color();
 
         ~Color() = default;
 
@@ -30,7 +31,16 @@ namespace rt {
             return *this;
         }
 
-        inline Color operator+(const Color &color)
+        inline constexpr Color &operator-=(const Color &color)
+        {
+            r = std::max(r - color.r, 0);
+            g = std::max(g - color.g, 0);
+            b = std::max(b - color.b, 0);
+
+            return *this;
+        }
+
+        inline Color operator+(const Color &color) const
         {
             uint red = std::min(r + color.r, 255);
             uint green = std::min(g + color.g, 255);
@@ -89,7 +99,7 @@ namespace rt {
             return r == 0 && g == 0 && b == 0;
         }
 
-        inline constexpr unsigned int toInt(void) const
+        inline constexpr uint toInt(void) const
         {
             return (r | (g << 8) | (b << 16) | (a << 24));
         }

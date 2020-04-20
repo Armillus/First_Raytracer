@@ -13,7 +13,7 @@ namespace rt {
             refractiveIndex(refractiveIndex)
         {}
 
-        ~Material() = default;
+        virtual ~Material() = default;
 
         Color color;
         float diffuseCoefficient;

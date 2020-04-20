@@ -16,7 +16,7 @@ namespace rt {
 
         virtual void setResizeCallback(const resizeCallback &callback) = 0;
 
-        virtual bool shouldClose(void) = 0;
+        virtual bool shouldClose(void) const = 0;
 
         virtual std::queue<Event> handleEvents(void) = 0;
 

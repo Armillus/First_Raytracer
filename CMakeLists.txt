@@ -12,7 +12,7 @@ conan_basic_setup(TARGETS)
 ## Setting flags for linux, finding the thread package.
 if (UNIX)
     find_package(Threads)
-    set(CMAKE_CXX_FLAGS "-g3 -Ofast -pipe -Wall -Wextra -std=c++17") #-fsanitize=address")
+    set(CMAKE_CXX_FLAGS "-g3 -Ofast -pipe -Wall -Wextra -std=c++17")
 endif()
 
 ## Add valgring flag
@@ -23,11 +23,22 @@ endif()
 ## Core sources
 set(SRC_CORE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Core.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Graphics/SFML/SfmlLibrary.cpp
 )
 
 ## MAterial sources
 set(SRC_MATERIAL
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Materials/Color/Color.cpp
+)
+
+set(SRC_OBJECTS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Primitives/Sphere.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Primitives/Plane.cpp
+)
+
+set(SRC_TEXTURES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Textures/SfmlTexture.cpp
+
 )
 
 ## Renderer sources
@@ -64,6 +75,9 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Materials
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Materials/Color
 
+    # Textures
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Textures
+
     # Maths
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Maths
 
@@ -94,6 +108,8 @@ include_directories(
 add_executable(raytracer
     ${SRC_CORE}
     ${SRC_MATERIAL}
+    ${SRC_TEXTURES}
+    ${SRC_OBJECTS}
     ${SRC_RENDERER}
     ${SRC_SCENE}
     ${SRC_VIEW}

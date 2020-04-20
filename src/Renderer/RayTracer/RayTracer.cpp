@@ -42,8 +42,10 @@ rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, u
     if (!closestObj)
         return (isPrimaryRay ? pixelColor : Color::Black);
     
+    auto P = ray.origin() + ray.direction() * t;
+
     // Compute Lights and Shadows effects
-    pixelColor *= closestObj->color();
+    pixelColor *= closestObj->color(P - closestObj->center());
     pixelColor += computeLightsAndShadows(scene, ray, closestObj, t);
 
     reflectionCoeff = closestObj->material().reflectivity;
@@ -53,8 +55,6 @@ rt::Color rt::RayTracer::computePixelColor(const Scene &scene, const Ray &ray, u
     pixelColor += computeRefractions(scene, ray, closestObj, t, depth, reflectionCoeff, refractionCoeff);
 
     // Compute reflections
-    //reflectionCoeff *= closestObj->material().reflectivity;
-    //pixelColor *= (1.0f - reflectionCoeff);
     pixelColor += computeReflections(scene, ray, closestObj, t, depth, reflectionCoeff, refractionCoeff);
 
     return (pixelColor);

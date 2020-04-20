@@ -9,7 +9,7 @@ namespace rt {
 
     class Viewer {
     public:
-        Viewer(const Resolution &screenRes) : _camera(0, 0, 0, screenRes.width, screenRes.height) {}
+        Viewer(const Resolution &screenRes) : _camera(0, 0, 10, screenRes.width, screenRes.height) {}
         Viewer(const Scene &scene, const Camera &camera);
         virtual ~Viewer() = default;
 
@@ -29,22 +29,65 @@ namespace rt {
         inline void moveCamToRight(float step = 1.0f)
         {
             _camera.origin().x += step;
+            _camera.computeDirection();
         }
 
         inline void moveCamToLeft(float step = 1.0f)
         {
             _camera.origin().x -= step;
+            _camera.computeDirection();
         }
 
         inline void moveCamUp(float step = 1.0f)
         {
             _camera.origin().y += step;
+            _camera.computeDirection();
         }
 
         inline void moveCamDown(float step = 1.0f)
         {
             _camera.origin().y -= step;
+            _camera.computeDirection();
         }
+
+        
+        inline void rotateCamToRight(float step = 1.0f)
+        {
+            _camera.direction().x += step;
+            _camera.computeDirection();
+        }
+
+        inline void rotateCamToLeft(float step = 1.0f)
+        {
+            _camera.direction().x -= step;
+            _camera.computeDirection();
+        }
+
+        inline void rotateCamUp(float step = 1.0f)
+        {
+            _camera.direction().y += step;
+            _camera.computeDirection();
+        }
+
+        inline void rotateCamDown(float step = 1.0f)
+        {
+            _camera.direction().y -= step;
+            _camera.computeDirection();
+        }
+
+
+        inline void moveCameraForward(float step = 1.0f)
+        {
+            _camera.origin().z -= step;
+            _camera.computeDirection();
+        }
+
+        inline void moveCameraBackward(float step = 1.0f)
+        {
+            _camera.origin().z += step;
+            _camera.computeDirection();
+        }
+
 
         inline void changeScreenResolution(const Resolution &screenRes)
         {
