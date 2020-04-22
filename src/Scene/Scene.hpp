@@ -13,7 +13,6 @@
 namespace rt {
 
     auto constexpr const STONE_TEXTURE_PATH = "./assets/textures/stone_HD.jpg";
-    //auto constexpr const STONE_TEXTURE_PATH = "./assets/textures/axel_millot.jpg";
     auto constexpr const EARTH_TEXTURE_PATH = "./assets/textures/earth_HD.jpg";
     auto constexpr const GOLD_TEXTURE_PATH = "./assets/textures/gold_HD.jpg";
     auto constexpr const CHECKERBOARD_TEXTURE_PATH = "./assets/textures/checkerboard.jpg";
