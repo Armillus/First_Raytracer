@@ -29,6 +29,8 @@ namespace rt {
 
 
     private:
+        void normalizeTextureCoordinates(long int &x, long int &y) const;
+
         maths::Vector3f _normal;
         maths::Vector3f _point;
     };

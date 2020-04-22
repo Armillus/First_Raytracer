@@ -8,8 +8,14 @@ namespace rt {
 
     class Object {
     public:
-        Object(const Material &mat) : _material(mat), _texture(nullptr) {}
-        Object(const Material &mat, const std::string &textureFilepath) : _material(mat), _texture(std::make_unique<SfmlTexture>(textureFilepath)) {}
+        Object(const Material &mat)
+            : _texture(nullptr), _material(mat)
+        {}
+        Object(const Material &mat, const std::string &textureFilepath)
+            : _texture(std::make_unique<SfmlTexture>(textureFilepath)),
+              _material(mat)
+        {}
+        
         virtual ~Object() = default;
 
         virtual bool intersect(const Ray &ray, float *t) const = 0;
@@ -28,8 +34,8 @@ namespace rt {
         }
 
     protected:
-        Material _material;
         std::unique_ptr<Texture> _texture;
+        Material _material;
     };
 
 }

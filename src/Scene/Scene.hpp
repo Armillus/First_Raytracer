@@ -5,16 +5,18 @@
 #include <algorithm>
 #include <string>
 
+#include "DirectionalLight.hpp"
+#include "SphericalLight.hpp"
 #include "Sphere.hpp"
 #include "Plane.hpp"
-#include "Light.hpp"
 
 namespace rt {
 
-    auto constexpr const DEFAULT_STONE_TEXTURE_PATH = "./assets/textures/stone_HD.jpg";
-    auto constexpr const DEFAULT_EARTH_TEXTURE_PATH = "./assets/textures/earth_HD.jpg";
-    auto constexpr const DEFAULT_GOLD_TEXTURE_PATH = "./assets/textures/gold_HD.jpg";
-    auto constexpr const DEFAULT_CHECKERBOARD_TEXTURE_PATH = "./assets/textures/checkerboard.jpg";
+    auto constexpr const STONE_TEXTURE_PATH = "./assets/textures/stone_HD.jpg";
+    //auto constexpr const STONE_TEXTURE_PATH = "./assets/textures/axel_millot.jpg";
+    auto constexpr const EARTH_TEXTURE_PATH = "./assets/textures/earth_HD.jpg";
+    auto constexpr const GOLD_TEXTURE_PATH = "./assets/textures/gold_HD.jpg";
+    auto constexpr const CHECKERBOARD_TEXTURE_PATH = "./assets/textures/checkerboard.jpg";
 
     class Scene {
     public:
@@ -34,6 +36,12 @@ namespace rt {
             return (_lights);
         }
 
+        inline void wasRendered(void)
+        {
+            if (_hasChanged)
+                _hasChanged = false;
+        }
+
         inline auto constexpr hasChangedSinceLastFrame(void)
         {
             if (!_hasChanged)
@@ -49,18 +57,13 @@ namespace rt {
             return (_ambientLightCoeff);
         }
 
-        inline float constexpr diffuseLightCoefficient(void) const
-        {
-            return (1.0f - _ambientLightCoeff);
-        }
-
     private:
         void createObjects();
         void createLights();
 
     protected:
         std::list<std::shared_ptr<Object>> _objects;
-        std::list<std::shared_ptr<Light>> _lights;
+        std::list<std::shared_ptr<ILight>> _lights;
         float _ambientLightCoeff;
         bool _hasChanged;
     };

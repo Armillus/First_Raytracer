@@ -1,6 +1,9 @@
 #pragma once
 
 #include <limits>
+#include <thread>
+#include <chrono>
+#include <future>
 #include <algorithm>
 
 #include "Renderer.hpp"
@@ -14,6 +17,10 @@ namespace rt {
         Refractions = 4,
         Illumination = 8,
     };
+
+    // only needed for thread developpement
+    auto constexpr const TIME_DEBUG = false;
+
 
     auto constexpr const DEFAULT_OPTIONS = Shadows | Reflections | Illumination | Refractions;
     auto constexpr const DEFAULT_REFLECTIONS_DEPTH = 10u;
@@ -80,6 +87,8 @@ namespace rt {
 
         uint _enabledOptions;
         uint _reflectionsDepth;
+
+        std::mutex _mutex;
     };
 
 

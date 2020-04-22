@@ -12,7 +12,11 @@ void rt::Viewer::show(
 {
     // Render scene
     if (_scene.hasChangedSinceLastFrame() || _camera.hasChangedSinceLastFrame())
+    {
         renderer->render(_scene, _camera);
+        _scene.wasRendered();
+        _camera.wasRendered();
+    }
 
     // Display the resulting scene
     graphicLibrary->clear();

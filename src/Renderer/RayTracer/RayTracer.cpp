@@ -9,19 +9,27 @@ rt::RayTracer::RayTracer(const Resolution &screenRes, uint startingOptions)
 
 void rt::RayTracer::render(const Scene &scene, const Camera &camera)
 {
-    //std::cout << "Render begins..." << std::endl;
+    std::chrono::_V2::system_clock::time_point tStart = std::chrono::high_resolution_clock::now();
+    if (TIME_DEBUG) {
+        std::cout << "Render begins..." << std::endl;
+    }
     render(scene, camera, _reflectionsDepth);
-    //std::cout << "Render finished!" << std::endl;
+    if (TIME_DEBUG) {
+        std::chrono::_V2::system_clock::time_point tEnd = std::chrono::high_resolution_clock::now();
+        auto tDelta = tEnd - tStart;
+        std::cout << "Render finished in :" << std::chrono::duration_cast<std::chrono::milliseconds>(tDelta).count() << "ms or μs"
+            << std::chrono::duration_cast<std::chrono::microseconds>(tDelta).count() << std::endl;
+    }
 }
 
 void rt::RayTracer::render(const Scene &scene, const Camera &camera, uint reflectionsDepth)
 {
-    unsigned int width = _screenResolution.width;
-    unsigned int height = _screenResolution.height;
+    uint width = _screenResolution.width;
+    uint height = _screenResolution.height;
 
-    for (unsigned int x = 0; x < width; ++x)
+    for (uint x = 0; x < width; ++x)
     {
-        for (unsigned int y = 0; y < height; ++y)
+        for (uint y = 0; y < height; ++y)
         {
             Ray primaryRay(camera.getPrimaryRay(x, y));
             Color pixelColor(computePixelColor(scene, primaryRay, reflectionsDepth, 1.0f, 1.0f, true));
@@ -65,7 +73,6 @@ rt::Color rt::RayTracer::computeLightsAndShadows(const Scene &scene, const Ray &
 {
     if (!(_enabledOptions & Illumination))
         return (Color::Black);
-
     return (computeGlobalIllumination(scene, ray, object, t));
 }
 
@@ -84,9 +91,9 @@ rt::Color rt::RayTracer::computeGlobalIllumination(const Scene &scene, const Ray
 
     for (auto &light : scene.lights())
     {
-        auto distanceFromPtoLight = light->position() - P;
+        auto distanceFromPtoLight = light->directionFrom(P); // Changed.
         maths::Vector3f shadowRayOrigin(P + N * bias);
-        rt::Ray shadowRay(shadowRayOrigin, distanceFromPtoLight.normalize());
+        rt::Ray shadowRay(shadowRayOrigin, distanceFromPtoLight);
         float angle = shadowRay.direction() * N;
 
         // This part of the object isn't lit according to the Lambert law.

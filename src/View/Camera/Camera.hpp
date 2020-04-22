@@ -11,10 +11,10 @@ namespace rt {
     class Camera {
     public:
         Camera(const maths::Vector3f &origin, const maths::Vector3f &lookAt, const Resolution &screenRes, float fieldOfView = DEFAULT_FOV);
-        Camera(float x, float y, float z, unsigned int width, unsigned int height, float fieldOfView = DEFAULT_FOV);
+        Camera(float x, float y, float z, uint width, uint height, float fieldOfView = DEFAULT_FOV);
         virtual ~Camera() = default;
 
-        virtual Ray getPrimaryRay(unsigned int x, unsigned int y) const;
+        virtual Ray getPrimaryRay(uint x, uint y) const;
 
         inline void setOrigin(const maths::Vector3f &newOrigin)
         {
@@ -28,7 +28,13 @@ namespace rt {
             _hasChanged = true;
         }
 
-        inline void resizeImagePlane(unsigned int width, unsigned int height)
+        inline void wasRendered(void)
+        {
+            if (_hasChanged)
+                _hasChanged = false;
+        }
+
+        inline void resizeImagePlane(uint width, uint height)
         {
             Resolution screenRes = {width, height};
 
@@ -71,16 +77,16 @@ namespace rt {
         }
 
     private:
-        inline constexpr float normalizePixelInX(unsigned int x) const
+        inline constexpr float normalizePixelInX(uint x) const
         {
-            unsigned int width = _imagePlane.width;
+            uint width = _imagePlane.width;
 
             return ((2 * ((x + 0.5) / width) - 1) * tan(_fov) * _aspectRatio);
         }
 
-        inline constexpr float normalizePixelInY(unsigned int y) const
+        inline constexpr float normalizePixelInY(uint y) const
         {
-            unsigned int height = _imagePlane.height;
+            uint height = _imagePlane.height;
 
             return (1 - 2 * ((y + 0.5) / height)) * tan(_fov);
         }

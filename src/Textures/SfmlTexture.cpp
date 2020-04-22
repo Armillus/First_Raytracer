@@ -9,12 +9,8 @@ rt::SfmlTexture::SfmlTexture(const std::string &filepath)
 
 rt::Color rt::SfmlTexture::getTextureColor(uint x, uint y) const
 {
-    auto size = _image.getSize();
-    
-    if (x > size.x)
-        x %= size.y;
-    if (y > size.y)
-        y %= size.y;
+    // auto size = _image.getSize();
+   // std::cout << "AFTER : x = " << x << " | y = " << y << " | size = " << size.x << ", " << size.y << std::endl;
 
     return (Color(_image.getPixel(x, y)));
 

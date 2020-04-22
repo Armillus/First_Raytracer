@@ -10,7 +10,7 @@ rt::Camera::Camera(const maths::Vector3f &origin, const maths::Vector3f &lookAt,
     resizeImagePlane(_imagePlane);
 }
 
-rt::Camera::Camera(float x, float y, float z, unsigned int width, unsigned height, float fieldOfView)
+rt::Camera::Camera(float x, float y, float z, uint width, uint height, float fieldOfView)
     : _origin(x, y, z), _direction((-_origin).normalize()),
     _up(0, 1, 0), _right(_direction.cross(_up)),
     _imagePlane({width, height}),
@@ -20,7 +20,7 @@ rt::Camera::Camera(float x, float y, float z, unsigned int width, unsigned heigh
     resizeImagePlane(_imagePlane);
 }
 
-rt::Ray rt::Camera::getPrimaryRay(unsigned int x, unsigned int y) const
+rt::Ray rt::Camera::getPrimaryRay(uint x, uint y) const
 {
     float dirX = normalizePixelInX(x);
     float dirY = normalizePixelInY(y);
