@@ -6,7 +6,7 @@
 
 namespace rt {
 
-    auto constexpr const DEFAULT_FOV = 45.0f;
+    auto constexpr const DEFAULT_FOV = 30.0f;
 
     class Camera {
     public:
@@ -14,7 +14,15 @@ namespace rt {
         Camera(float x, float y, float z, uint width, uint height, float fieldOfView = DEFAULT_FOV);
         virtual ~Camera() = default;
 
-        virtual Ray getPrimaryRay(uint x, uint y) const;
+        virtual inline rt::Ray getPrimaryRay(float x, float y) const
+        {
+            float dirX = normalizePixelInX(x);
+            float dirY = normalizePixelInY(y);
+            maths::Vector3f rayDir(dirX, dirY, -1);
+            //auto rayDir = _right * dirX + _up * dirY + _origin + _direction;
+
+            return rt::Ray(_origin, rayDir);
+        }
 
         inline void setOrigin(const maths::Vector3f &newOrigin)
         {
@@ -77,16 +85,16 @@ namespace rt {
         }
 
     private:
-        inline constexpr float normalizePixelInX(uint x) const
+        inline constexpr float normalizePixelInX(float x) const
         {
-            uint width = _imagePlane.width;
+            float width = _imagePlane.width;
 
             return ((2 * ((x + 0.5) / width) - 1) * tan(_fov) * _aspectRatio);
         }
 
-        inline constexpr float normalizePixelInY(uint y) const
+        inline constexpr float normalizePixelInY(float y) const
         {
-            uint height = _imagePlane.height;
+            float height = _imagePlane.height;
 
             return (1 - 2 * ((y + 0.5) / height)) * tan(_fov);
         }

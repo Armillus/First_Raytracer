@@ -1,0 +1,57 @@
+{
+    "lights": [
+      {
+        "type": "directional",
+        "direction": [-300, 200, -200],
+        "color": [255, 255, 255],
+        "intensity": 1
+      },
+      {
+        "type": "spherical",
+        "position": [0, 400, -300],
+        "color": [255, 255, 255],
+        "intensity": 4000
+      }
+    ],
+    "objects": [
+      {
+        "type": "sphere",
+        "center": [-350, -50, -400],
+        "radius": 150,
+        "material": "material1",
+        "texturePath": "./assets/textures/stone_HD.jpg"
+      },
+      {
+        "type": "sphere",
+        "center": [-50, 400, -800],
+        "radius": 200,
+        "material": "material4"
+      },
+      {
+        "type": "sphere",
+        "center": [275, -50, -500],
+        "radius": 150,
+        "material": "material5"
+      },
+      {
+        "type": "sphere",
+        "center": [-25, -50, -300],
+        "radius": 100,
+        "material": "material6"
+      },
+      {
+        "type": "plane",
+        "normal": [0, 1, 0],
+        "point": [0, -200, 0],
+        "material": "material2",
+        "texturePath": "./assets/textures/checkerboard.jpg"
+      },
+      {
+        "type": "plane",
+        "normal": [0, 0, -1],
+        "point": [0, 0, -1000],
+        "material": "material3"
+      }
+    ],
+    "materials": []
+  }

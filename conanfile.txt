@@ -1,5 +1,8 @@
 [requires]
 sfml/2.5.1@bincrafters/stable
+nlohmann_json/3.7.3
+tinyobjloader/1.0.6
+gtest/1.8.1@bincrafters/stable
 
 [options]
 sfml:graphics=True

@@ -3,7 +3,9 @@
 rt::Plane::Plane(const maths::Vector3f &normal,
                  const maths::Vector3f &point,
                  const Material &mat)
-    : Object(mat), _normal(normal), _point(point)
+    : Object  { mat, ObjectType::tPlane }
+    , _normal { normal                  }
+    , _point  { point                   }
 {
 
 }
@@ -12,7 +14,9 @@ rt::Plane::Plane(const maths::Vector3f &normal,
                  const maths::Vector3f &point,
                  const Material &mat,
                  const std::string &textureFilepath)
-    : Object(mat, textureFilepath), _normal(normal), _point(point)
+    : Object  { mat, textureFilepath, ObjectType::tPlane }
+    , _normal { normal                                   }
+    , _point  { point                                    }
 {
 
 }

@@ -1,16 +1,15 @@
 #pragma once
 
-#include "ILight.hpp"
+#include "ALight.hpp"
 
 namespace rt {
 
-    class ARelativeLight : public ILight {
+    class ARelativeLight : public ALight {
     public:
 
         ARelativeLight(const maths::Vector3f &direction, const Color &color, float intensity)
-            : _dir       { direction }
-            , _color     { color     }
-            , _intensity { intensity }
+            : ALight(color, intensity, Directional)
+            , _dir       { direction }
             {}
 
         inline const maths::Vector3f &position() const override
@@ -18,15 +17,13 @@ namespace rt {
             return _dir;
         }
 
-        inline const Color &color() const override
+        inline void setDirection(const maths::Vector3f &direction)
         {
-            return _color;
+            _dir = direction;
         }
 
     protected:
         maths::Vector3f _dir;
-        Color _color;
-        float _intensity;
     };
 
 }

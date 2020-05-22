@@ -1,0 +1,163 @@
+{
+    "lights": [
+      {
+        "type": "directional",
+        "direction": [-300, 200, -200],
+        "color": [255, 76, 76],
+        "intensity": 1
+      },
+      {
+        "type": "spherical",
+        "position": [0, 400, -300],
+        "color": [255, 255, 153],
+        "intensity": 4000
+      }
+    ],
+    "objects": [
+      {
+        "type": "sphere",
+        "center": [-350, -50, -400],
+        "radius": 150,
+        "material": "stoneSphere",
+        "texturePath": "./assets/textures/stone_HD.jpg"
+      },
+      {
+          "type": "sphere",
+          "center": [-350, 200, -450],
+          "radius": 100,
+          "material": "greenSphere"
+      },
+      {
+        "type": "sphere",
+        "center": [-50, 400, -800],
+        "radius": 200,
+        "material": "cyanSphere"
+      },
+      {
+        "type": "sphere",
+        "center": [320, 250, -550],
+        "radius": 100,
+        "material": "yellowSphere"
+      },
+      {
+        "type": "sphere",
+        "center": [275, -50, -500],
+        "radius": 150,
+        "material": "magentaSphere"
+      },
+      {
+        "type": "sphere",
+        "center": [750, 100, -550],
+        "radius": 300,
+        "material": "redSphere"
+      },
+      {
+        "type": "sphere",
+        "center": [225, -150, -275],
+        "radius": 40,
+        "material": "blackSphere"
+      },
+      {
+        "type": "sphere",
+        "center": [-25, -50, -300],
+        "radius": 100,
+        "material": "glassSphere"
+      },
+      {
+        "type": "plane",
+        "normal": [0, 1, 0],
+        "point": [0, -200, 0],
+        "material": "yellowPlane",
+        "texturePath": "./assets/textures/checkerboard.jpg"
+      },
+      {
+        "type": "plane",
+        "normal": [0, 0, -1],
+        "point": [0, 0, -1000],
+        "material": "mirrorPlane"
+      }
+    ],
+    "materials": [
+        {
+            "name": "greenSphere",
+            "color": [0, 255, 0],
+            "diffuseCoeff": 0.5,
+            "specularCoeff": 0.5,
+            "shininess": 80,
+            "reflectivity": 0.45
+        },
+        {
+            "name": "yellowSphere",
+            "color": [255, 255, 0],
+            "diffuseCoeff": 1,
+            "specularCoeff": 0.3,
+            "shininess": 58,
+            "reflectivity": 0.1
+        },
+        {
+            "name": "redSphere",
+            "color": [255, 0, 0],
+            "diffuseCoeff": 0.8,
+            "specularCoeff": 0.6,
+            "shininess": 75,
+            "reflectivity": 0.85
+        },
+      {
+        "name": "stoneSphere",
+        "color": [0, 0, 255],
+        "diffuseCoeff": 0.5,
+        "specularCoeff": 0.5,
+        "shininess": 80,
+        "reflectivity": 0.45
+      },
+      {
+        "name": "yellowPlane",
+        "color": [255, 255, 0],
+        "diffuseCoeff": 1,
+        "specularCoeff": 0.5,
+        "shininess": 150
+      },
+      {
+        "name": "mirrorPlane",
+        "color": [25, 127, 127],
+        "diffuseCoeff": 0,
+        "specularCoeff": 1,
+        "shininess": 150,
+        "reflectivity": 1
+      },
+      {
+        "name": "cyanSphere",
+        "color": [0, 255, 255],
+        "diffuseCoeff": 0.5,
+        "specularCoeff": 1,
+        "shininess": 120,
+        "reflectivity": 0.75
+      },
+      {
+        "name": "magentaSphere",
+        "color": [255, 0, 255],
+        "diffuseCoeff": 0.7,
+        "specularCoeff": 0.8,
+        "shininess": 108,
+        "reflectivity": 0.55
+      },
+      {
+        "name": "blackSphere",
+        "color": [0, 0, 0],
+        "diffuseCoeff": 0.4,
+        "specularCoeff": 0.8,
+        "shininess": 100,
+        "reflectivity": 0.85
+      },
+      {
+        "name": "glassSphere",
+        "color": [0, 0, 0],
+        "diffuseCoeff": 0.5,
+        "specularCoeff": 0.5,
+        "shininess": 80,
+        "reflectivity": 1,
+        "transmittance": 1,
+        "refractiveIndex": 1.125
+      }
+    ]
+  }

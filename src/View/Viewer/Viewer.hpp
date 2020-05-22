@@ -4,13 +4,17 @@
 #include "Scene.hpp"
 #include "Camera.hpp"
 #include "Renderer.hpp"
+#include "Parser.hpp"
 
 namespace rt {
 
     class Viewer {
     public:
-        Viewer(const Resolution &screenRes) : _camera(0, 0, 10, screenRes.width, screenRes.height) {}
-        Viewer(const Scene &scene, const Camera &camera);
+        Viewer(const Resolution &screenRes, int ac, const char **av)
+            : _parser(ac, av, _scene), _camera(0, 0, 250, screenRes.width, screenRes.height)
+        {
+        }
+        Viewer(const Scene &scene, const Camera &camera, int ac, const char **av);
         virtual ~Viewer() = default;
 
         void show(std::unique_ptr<IGraphicalLibrary> &graphicLibrary,
@@ -94,8 +98,14 @@ namespace rt {
             _camera.resizeImagePlane(screenRes);
         }
 
+        inline const Camera &camera() const
+        {
+            return _camera;
+        }
+
     private:
         Scene _scene;
+        Parser _parser;
         Camera _camera;
     };
 

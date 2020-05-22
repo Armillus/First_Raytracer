@@ -15,7 +15,7 @@ namespace rt {
 
         bool intersect(const Ray &ray, float *t) const override;
 
-        inline maths::Vector3f normalSurface([[maybe_unused]] maths::Vector3f &p) const override
+        inline maths::Vector3f normalSurface([[maybe_unused]] const maths::Vector3f &p) const override
         {
             return _normal;
         }
@@ -23,6 +23,21 @@ namespace rt {
         inline maths::Vector3f const &center() const override
         {
             return _point;
+        }
+
+        inline void setNormal(const maths::Vector3f &normal)
+        {
+            _normal = normal;
+        }
+
+        inline void setCenter(const maths::Vector3f &center)
+        {
+            _point = center;
+        }
+
+        inline void setMaterial(const Material &material)
+        {
+            _material = material;
         }
 
         Color color(const maths::Vector3f &point) const;

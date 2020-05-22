@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <array>
 
 namespace rt::maths {
 
@@ -11,6 +12,7 @@ namespace rt::maths {
         Vector3() : x(0), y(0), z(0) {}
         Vector3(const Vector3<T> &v) : x(v.x), y(v.y), z(v.z) {}
         Vector3(const T &x, const T &y, const T &z) : x(x), y(y), z(z) {}
+        Vector3(const std::array<float, 3> &v) : x(v.at(0)), y(v.at(1)), z(v.at(2)) {}
         ~Vector3() = default;
 
         inline constexpr float norm(void) const
@@ -20,12 +22,25 @@ namespace rt::maths {
             return (::sqrtf(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2)));
         }
 
+        // inline constexpr float squaredNorm(void) const
+        // {
+        //     return ((std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2)));
+        // }
+
         inline constexpr Vector3<T> &operator=(const Vector3<T> &v)
         {
             x = v.x;
             y = v.y;
             z = v.z;
 
+            return *this;
+        }
+
+        inline constexpr Vector3<T> &operator=(const std::array<int, 3> &v)
+        {
+            x = v[0];
+            y = v[1];
+            z = v[2];
             return *this;
         }
 
@@ -65,7 +80,7 @@ namespace rt::maths {
         {
             float cx = (y * v.z) - (z * v.y);
             float cy = (z * v.x) - (x * v.z);
-            float cz = (x * v.y) - (y -v.x);
+            float cz = (x * v.y) - (y * v.x);
 
             return Vector3<T>(cx, cy, cz);
         }
@@ -88,6 +103,22 @@ namespace rt::maths {
         inline constexpr bool operator<(const Vector3<T> &v) const
         {
             return (this->norm() < v.norm());
+            //return (this->squaredNorm() < v.squaredNorm());
+        }
+
+        inline constexpr bool operator<=(const Vector3<T> &v) const
+        {
+            return (this->norm() <= v.norm());
+        }
+
+        inline constexpr bool operator>(const Vector3<T> &v) const
+        {
+            return (this->norm() > v.norm());
+        }
+
+        inline constexpr bool operator>=(const Vector3<T> &v) const
+        {
+            return (this->norm() >= v.norm());
         }
 
         inline constexpr float squarePower(void) const

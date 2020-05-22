@@ -1,7 +1,7 @@
 #include "Viewer.hpp"
 
-rt::Viewer::Viewer(const Scene &scene, const Camera &camera)
-    : _scene(scene), _camera(camera)
+rt::Viewer::Viewer(const Scene &scene, const Camera &camera, int ac, const char **av)
+    : _scene(scene), _parser(ac, av, _scene), _camera(camera)
 {
 
 }

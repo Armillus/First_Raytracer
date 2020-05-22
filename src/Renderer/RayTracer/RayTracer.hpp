@@ -1,10 +1,9 @@
 #pragma once
 
 #include <limits>
-#include <thread>
 #include <chrono>
-#include <future>
 #include <algorithm>
+#include <optional>
 
 #include "Renderer.hpp"
 
@@ -16,14 +15,17 @@ namespace rt {
         Reflections = 2,
         Refractions = 4,
         Illumination = 8,
+        SoftShadows = 16,
+        AntiAliasing = 32,
+        DepthOfField = 64
     };
 
     // only needed for thread developpement
-    auto constexpr const TIME_DEBUG = false;
+    auto constexpr const TIME_DEBUG = true;
 
-
-    auto constexpr const DEFAULT_OPTIONS = Shadows | Reflections | Illumination | Refractions;
+    auto constexpr const DEFAULT_OPTIONS = Shadows | Reflections | Illumination | Refractions | SoftShadows | AntiAliasing;
     auto constexpr const DEFAULT_REFLECTIONS_DEPTH = 10u;
+    auto constexpr const DEFAULT_SAMPLES = 2;
 
     auto constexpr const DEFAULT_BIAS = 0.5f;
 
@@ -33,7 +35,7 @@ namespace rt {
         ~RayTracer() override = default;
 
         void render(const Scene &scene, const Camera &camera) override;
-        void render(const Scene &scene, const Camera &camera, uint reflectionsDepth);
+        void render(const Scene &scene, const Camera &camera, uint reflectionsDepth, int samples);
 
         inline void enableOptions(uint options)
         {
@@ -42,24 +44,41 @@ namespace rt {
 
         inline void disableOptions(uint options)
         {
-            _enabledOptions &= options;
+            _enabledOptions &= ~options;
         }
 
     private:
-        Color computePixelColor(const Scene &scene, const Ray &ray, uint depth, float reflectionCoeff, float refractionCoeff, bool isPrimaryRay);
-        std::optional<std::pair<std::shared_ptr<rt::Object>, float>>  findClosestObject(const Scene &scene, const Ray &ray);
+        void renderPixel(const Scene &scene, const Camera &camera, int samples, uint ix, uint iy, bool aaIsDisabled);
+        Color getPixelColor(const Scene &scene, const Camera &camera, int samples, uint ix, uint iy);
+        
+        inline Color getPixelColor(const Scene &scene, const Camera &camera, uint x, uint y)
+        {
+            Ray primaryRay(camera.getPrimaryRay(x, y));
+            
+            return computePixelColor(scene, primaryRay, 0);
+        }
 
-        Color computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);
-        Color computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<Object> object, float t);
+        Color computePixelColor(const Scene &scene, const Ray &ray, uint depth);
+        std::optional<std::pair<std::shared_ptr<rt::IObject>, float>> findClosestObject(const Scene &scene, const Ray &ray);
+
+        Color computeLightsAndShadows(const Scene &scene, const Ray &ray, std::shared_ptr<IObject> object, float t);
+        Color computeGlobalIllumination(const Scene &scene, const Ray &ray, std::shared_ptr<IObject> object, float t);
         bool isShadowed(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight);
         bool detectShadows(const Scene &scene, const Ray &shadowRay, const maths::Vector3f &distanceFromPtoLight);
 
+        float getSoftShadowCoefficient(
+            const Scene &scene,
+            const rt::maths::Vector3f &P,
+            const rt::maths::Vector3f &N,
+            const std::shared_ptr<rt::ILight> &light);
+
+
         Color computeReflections(const Scene &scene, const Ray &ray,
-                                 std::shared_ptr<Object> object, float t,
-                                 uint depth, float reflectionCoeff, float refractionCoeff);
+                                 std::shared_ptr<IObject> object, float t,
+                                 uint depth, float reflectionCoeff);
 
         Color computeRefractions(const Scene &scene, const Ray &ray,
-                                 std::shared_ptr<Object> object, float t,
+                                 std::shared_ptr<IObject> object, float t,
                                  uint depth, float &reflectionCoeff, float refractionCoeff);
 
         float fresnel(const maths::Vector3f &I, maths::Vector3f &N, const float &ior) 
@@ -87,8 +106,7 @@ namespace rt {
 
         uint _enabledOptions;
         uint _reflectionsDepth;
-
-        std::mutex _mutex;
+        float _zBuffer;
     };
 
 

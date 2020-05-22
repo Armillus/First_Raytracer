@@ -1,0 +1,53 @@
+{
+  "lights": [
+    {
+      "type": "directional",
+      "direction": "",
+      "color": "",
+      "intensity": []
+    },
+    {
+      "type": "spherical",
+      "position": "",
+      "color": "",
+      "intensity": []
+    },
+    {
+      "type": []
+    }
+  ],
+  "materials": [
+    {
+      "name": "Nope",
+      "color": "",
+      "diffuseCoeff": "",
+      "specularCoeff": "",
+      "shininess": "",
+      "reflectivity": "",
+      "transmittance": "",
+      "refractiveIndex": ""
+    },
+    {
+      "name": 123
+    }
+  ],
+  "objects": [
+    {
+      "type": "plane",
+      "normal": "",
+      "point": "",
+      "material": 1,
+      "texturePath": 2
+    },
+    {
+      "type": "sphere",
+      "center": "",
+      "radius": "",
+      "material": 1,
+      "texturePath": 2
+    },
+    {
+      "type": []
+    }
+  ]
+}

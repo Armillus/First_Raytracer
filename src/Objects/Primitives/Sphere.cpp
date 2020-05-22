@@ -2,14 +2,14 @@
 
 rt::Sphere::Sphere(const maths::Vector3f &center,
                    float radius, const Material &material)
-    : Object(material), _center(center), _radius(radius)
+    : Object(material, ObjectType::tSphere), _center(center), _radius(radius)
 {
 
 }
 
 rt::Sphere::Sphere(const maths::Vector3f &center,
                    float radius, const Material &material, const std::string &textureFilepath)
-    : Object(material, textureFilepath), _center(center), _radius(radius)
+    : Object(material, textureFilepath, ObjectType::tSphere), _center(center), _radius(radius)
 {
 
 }

@@ -7,7 +7,7 @@
 namespace rt {
 
     auto constexpr const DEFAULT_WIN_TITLE = "EpiTracer";
-    Resolution constexpr const DEFAULT_WIN_RES = {1200, 800};
+    Resolution constexpr const DEFAULT_WIN_RES = {1400, 1000};
 
     class Core {
     public:
@@ -19,9 +19,7 @@ namespace rt {
     private:
         void setCallbacks();
         void setEventsCallbacks();
-        void setResizeCallback();        
-
-        void loadScene();
+        void setResizeCallback();
 
         void processEvents(std::queue<Event> &events);
 

@@ -1,0 +1,48 @@
+{
+  "lights": [
+    {
+      "type": "directional",
+      "direction": [-300, 200, -200],
+      "color": [255, 255, 255],
+      "intensity": 1
+    },
+    {
+      "type": "spherical",
+      "position": [0, 400, -300],
+      "color": [255, 255, 255],
+      "intensity": 4000
+    }
+  ],
+  "objects": [
+    {
+      "type": "plane",
+      "normal": [0, 1, 0],
+      "point": [0, -200, 0],
+      "material": "material2",
+      "texturePath": "./assets/textures/checkerboard.jpg"
+    },
+    {
+      "type": "plane",
+      "normal": [0, 0, -1],
+      "point": [0, 0, -1000],
+      "material": "material3"
+    }
+  ],
+  "materials": [
+    {
+      "name": "material2",
+      "color": [255, 255, 0],
+      "diffuseCoeff": 1,
+      "specularCoeff": 0.5,
+      "shininess": 150
+    },
+    {
+      "name": "material3",
+      "color": [255, 51, 51],
+      "diffuseCoeff": 0,
+      "specularCoeff": 0,
+      "shininess": 10,
+      "reflectivity": 1
+    }
+  ]
+}

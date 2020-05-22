@@ -49,3 +49,10 @@ if [ "$1" == "--doc" ]; then
     firefox index.html
 
 fi
+
+# Set up the doxygen documentation and launch it from firefox
+if [ "$1" == "--test" ]; then
+    
+    ./tests/unit_tests
+    gcovr --exclude src/Renderer/ --exclude src/Core/ --exclude src/main.cpp --exclude src/Parser --exclude tests/
+fi

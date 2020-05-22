@@ -19,13 +19,3 @@ rt::Camera::Camera(float x, float y, float z, uint width, uint height, float fie
     _up = _right.cross(_direction);
     resizeImagePlane(_imagePlane);
 }
-
-rt::Ray rt::Camera::getPrimaryRay(uint x, uint y) const
-{
-    float dirX = normalizePixelInX(x);
-    float dirY = normalizePixelInY(y);
-    //maths::Vector3f rayDir(dirX, dirY, -1);
-    auto rayDir = _right * dirX + _up * dirY + _origin + _direction;
-
-    return rt::Ray(_origin, rayDir - _origin);
-}

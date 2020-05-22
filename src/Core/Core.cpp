@@ -4,15 +4,14 @@ rt::Core::Core([[maybe_unused]] int argc, [[maybe_unused]] const char **argv)
     : _graphicLibrary(std::make_unique<SfmlLibrary>(
         DEFAULT_WIN_RES, DEFAULT_WIN_TITLE)),
     _renderer(std::make_unique<RayTracer>(DEFAULT_WIN_RES)),
-    _viewer(DEFAULT_WIN_RES)
+    _viewer(DEFAULT_WIN_RES, argc, argv)
 {
     setCallbacks();
-    loadScene();
 }
 
 void rt::Core::setCallbacks(void)
 {
-    setEventsCallbacks();
+    //setEventsCallbacks();
     setResizeCallback();
 }
 
@@ -27,7 +26,7 @@ void rt::Core::setEventsCallbacks(void)
     _eventsCallbacks[Event::A] = [this](){ _viewer.rotateCamToLeft(); };
     _eventsCallbacks[Event::D] = [this](){ _viewer.rotateCamToRight(); };
     _eventsCallbacks[Event::S] = [this](){ _viewer.rotateCamDown(); };
-    
+
     _eventsCallbacks[Event::Q] = [this](){ _viewer.moveCamUp(); };
     _eventsCallbacks[Event::E] = [this](){ _viewer.moveCamDown(); };
 }
@@ -41,15 +40,6 @@ void rt::Core::setResizeCallback(void)
             _viewer.changeScreenResolution(screenRes);
         }
     );
-}
-
-void rt::Core::loadScene(void)
-{
-    //Scene scene;
-    //Camera camera(0, 0, 0, );
-
-    //_viewer.setScene(scene);
-    //_viewer.setCamera(camera);
 }
 
 int rt::Core::run(void)
